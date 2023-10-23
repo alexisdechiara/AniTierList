@@ -1,0 +1,40 @@
+.ani-button-search {
+    --el-color-primary: #57b1ef;
+    --el-font-weight-primary: 700;
+    margin-top: 15px;
+    text-transform: capitalize;
+    box-shadow: none !important;
+}
+
+.el-button {
+    --el-color-primary: #3db4f2;
+    --el-color-white: #edf1f5;
+    --el-color-danger: #e28590;
+    font-size: var(--el-font-size-medium);
+    transition: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+
+    &--primary{
+        &:hover {
+            --el-button-hover-text-color: var(--el-color-white);
+            --el-button-hover-link-text-color: var(--el-color-primary);
+            --el-button-hover-bg-color: var(--el-color-primary);
+            --el-button-hover-border-color: var(--el-color-primary);
+        }
+    }
+
+    &--danger{
+        &:hover {
+            --el-button-hover-text-color: var(--el-color-white);
+            --el-button-hover-link-text-color: var(--el-color-danger);
+            --el-button-hover-bg-color: var(--el-color-danger);
+            --el-button-hover-border-color: var(--el-color-danger);
+        }
+    }
+    
+
+    &:hover:not(:disabled){
+        box-shadow: 0 1px 10px 0 rgba(49, 54, 68, 0.15);
+    }
+}
