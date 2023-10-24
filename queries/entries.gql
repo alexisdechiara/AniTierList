@@ -1,0 +1,31 @@
+query entries($username: String) {
+    MediaListCollection(userName: $username, type: ANIME) {
+        lists {
+            entries {
+                score(format: POINT_10_DECIMAL)
+                media {
+                    id
+                    title {
+                        romaji
+                        english
+                        userPreferred
+                    }
+                    format
+                    season
+                    seasonYear
+                    genres
+                    coverImage {
+                        medium
+                    }
+                    relations {
+                        edges {
+                            relationType
+                        }
+                    }
+                    status
+                    siteUrl
+                }
+            }
+        }
+    }
+}

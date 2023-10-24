@@ -10,17 +10,21 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+interface Option {
+  value: string,
+  label: string
+}
 
 const props = defineProps({
   label: String,
   white: Boolean,
-  modelValue: Array,
-  options: Array,
+  modelValue: Array<Option>,
+  options: Array<Option>,
   multiple: Boolean,
   disabled: Boolean
 });
 
-const value = ref('');
+let value = ref<Array<Option>>([]);
 
 const emit = defineEmits(['update:modelValue'])
 

@@ -1,5 +1,5 @@
 <template>
-	<div class="h-full flex items-center justify-center">
+	<div class="flex items-center justify-center h-full">
 		<div class="flex flex-col mx-32 px-[30px] min-h-screen max-h-full">
 			<div class="flex flex-row items-end my-[40px] space-x-6">
 				<AniInput label="Search" search clearable v-model.lazy="filters.search" />
@@ -71,6 +71,11 @@ export default {
 		ElButton,
 		ElDialog,
 		ElEmpty
+	},
+	setup() {
+		definePageMeta({
+			middleware: "check"
+		})
 	},
 	data() {
 		return {
@@ -166,60 +171,13 @@ export default {
 	},
 	computed: {
 		async getAllEntries() {
-			var query = `
-				query ($username: String) {
-					MediaListCollection(userName: $username, type: ANIME) {
-						lists {
-							entries {
-								score(format: POINT_10_DECIMAL)
-								media {
-									id
-									title {
-										romaji
-										english
-										userPreferred
-									}
-									format
-									season
-									seasonYear
-									genres
-									coverImage {
-										medium
-									}
-									relations {
-										edges {
-											relationType
-										}
-									}
-									status
-									siteUrl
-								}
-							}
-						}
-					}
-				}
-			`;
-
 			const route = useRoute()
-
-			// Define the config we'll need for our Api request
-			const options = {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Accept: "application/json",
-				},
-				body: JSON.stringify({
-					query: query,
-					variables: {
-						username: route.params.username,
-					},
-				}),
-			};
-
-			const response = await fetch("https://graphql.anilist.co", options).then(response => response.json());
+			const { data } = await useAsyncGql({
+				operation: 'entries',
+				variables: { username: route.params.username }
+			})
 			this.isLoaded = true;
-			let result = response.data.MediaListCollection.lists[0].entries;
+			let result = data.value.MediaListCollection.lists[0].entries;
 			this.entries = result.sort((a, b) => b.score - a.score);
 			if (route.query.seasons != null) this.filters.seasons = true;
 			if (route.query.min != null && route.query.min != 0 && route.query.min <= 10) this.filters.range[0] = route.query.min;
