@@ -1,0 +1,5 @@
+query auth($username: String) {
+  User(name: $username) {
+    id
+  }
+}

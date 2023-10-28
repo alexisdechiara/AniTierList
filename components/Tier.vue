@@ -1,9 +1,9 @@
 <template>
 	<div class="flex flex-row min-h-[150px]">
-		<contenteditable @dblclick="isEditable = true" @focusout="isEditable = false" tag="div" :contenteditable="isEditable" v-model="value" :no-nl="true" :no-html="true" @returned="enterPressed()" v-if="name != null" :style="'background-color:' + color" class="flex break-word basis-auto min-h-[150px] w-[200px] text-white text-center justify-center items-center font-bold text-3xl" />
+		<contenteditable @dblclick="isEditable = true" @focusout="isEditable = false" tag="div" :contenteditable="isEditable" v-model="value" :no-nl="true" :no-html="true" @returned="enterPressed()" v-if="name != null" :style="'background-color:' + color" class="flex break-word basis-auto min-h-[150px] w-[200px] text-white text-center justify-center items-center font-bold text-3xl focus:outline-none" />
 		<draggable class="flex flex-wrap flex-row w-full" :group="group" :list="entries" item-key="media.id">
-			<template #item="{ element }">
-				<img v-show="checkAll(element)" class="flex aspect-[2/3] object-cover h-[150px]" :src="element.media.coverImage.medium" alt="">
+			<template #item="{ element, index }">
+				<Item v-show="checkAll(element)" :content="element" @deleted="removeAt(index)" />
 			</template>
 		</draggable>
 	</div>
@@ -23,6 +23,7 @@ export default {
 		return {
 			isEditable: false,
 			value: this.name,
+			showDetail: false
 		}
 	},
 	props: {
@@ -36,6 +37,9 @@ export default {
 	methods: {
 		enterPressed() {
 			this.$emit('update:value', this.value)
+		},
+		removeAt(index) {
+			this.entries.splice(index, 1)
 		},
 		checkAll(element) {
 			return (

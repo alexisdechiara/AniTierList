@@ -30,8 +30,8 @@ export default {
     clearable: Boolean
   },
   methods: {
-    updateValue(event) {
-      this.$emit('update:modelValue', this.value);
+    updateValue() {
+      emit('update:modelValue', this.value);
     }
   },
 };

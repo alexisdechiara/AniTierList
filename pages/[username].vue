@@ -72,11 +72,6 @@ export default {
 		ElDialog,
 		ElEmpty
 	},
-	setup() {
-		definePageMeta({
-			middleware: "check"
-		})
-	},
 	data() {
 		return {
 			downloadDialogVisible: ref(false),

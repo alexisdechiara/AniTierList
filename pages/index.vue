@@ -44,8 +44,6 @@ export default {
             if (this.sequelRank) queries["seasons"] = true;
             if (this.range[0] != 0) queries["min"] = this.range[0];
             if (this.range[1] != 10) queries["max"] = this.range[1];
-
-            console.log(queries);
             if (this.username != "") {
                 router.push({ path: this.username, query: queries });
             }

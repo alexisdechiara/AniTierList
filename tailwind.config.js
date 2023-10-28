@@ -12,17 +12,6 @@ module.exports = {
 		fontFamily: {
 			sans: [
 				"Overpass",
-				"Roboto",
-				"-apple-system",
-				"BlinkMacSystemFont",
-				"Segoe UI",
-				"Oxygen",
-				"Ubuntu",
-				"Cantarell",
-				"Fira Sans",
-				"Droid Sans",
-				"Helvetica Neue",
-				"sans-serif",
 			],
 		},
 		extend: {
@@ -31,6 +20,12 @@ module.exports = {
 				aniBody: "#edf1f5",
 				aniWhite: "#fafafa",
 				aniGray: "#5c728a",
+				aniRed: 'rgb(var(--color-red) / <alpha-value>)',
+				aniPeach: 'rgb(var(--color-peach) / <alpha-value>)',
+				aniOrange: 'rgb(var(--color-orange) / <alpha-value>)',
+				aniYellow: 'rgb(var(--color-yellow) / <alpha-value>)',
+				aniGreen: 'rgb(var(--color-green) / <alpha-value>)',
+				aniPurple: 'rgb(var(--color-purple) / <alpha-value>)',
 			},
 			borderRadius: {
 				aniRounded: "4px",

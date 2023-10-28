@@ -14,8 +14,34 @@ query entries($username: String) {
                     season
                     seasonYear
                     genres
+                    isFavourite
+                    studios(isMain: true) {
+                        edges {
+                            isMain
+                            node {
+                                name
+                                siteUrl
+                            }
+                        }
+                    }
+                    streamingEpisodes {
+                        site
+                    }
+                    trailer {
+                        site
+                        thumbnail
+                    }
+                    rankings {
+                        allTime
+                        rank
+                    }
+                    favourites
+                    description
+                    siteUrl
                     coverImage {
                         medium
+                        large
+                        extraLarge
                     }
                     relations {
                         edges {
