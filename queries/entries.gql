@@ -33,9 +33,11 @@ query entries($username: String) {
                     }
                     rankings {
                         allTime
+                        type
                         rank
                     }
                     favourites
+                    averageScore
                     description
                     siteUrl
                     coverImage {

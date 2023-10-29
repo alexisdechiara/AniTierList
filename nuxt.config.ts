@@ -31,6 +31,7 @@ export default defineNuxtConfig({
     modules: [
         "@element-plus/nuxt",
         "@nuxtjs/tailwindcss",
+        "@nuxtjs/eslint-module",
         "nuxt-graphql-client",
         "@nuxt/image",
         "@vueuse/nuxt",
