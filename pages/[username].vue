@@ -8,7 +8,7 @@
 				<AniSelect label="Season" :options="seasons" v-model.lazy="filters.season" />
 				<AniSelect label="Format" multiple :options="formats" v-model.lazy="filters.formats" />
 				<div class="relative grow">
-					<el-button class="float-right aspect-1 w-[40px] hover:text-aniPrimary focus:bg-aniWhite" size="large" color="#fafafa" @click="isOpen = !isOpen">
+					<el-button class="float-right aspect-square w-[40px] hover:text-aniPrimary focus:bg-aniWhite" size="large" color="#fafafa" @click="isOpen = !isOpen">
 						<font-awesome-icon icon="fas fa-sliders-h" :class="[isOpen ? 'text-aniPrimary' : 'text-[#afbfd1]']" class="stroke-2 focus:text-aniPrimary hover:text-aniPrimary" />
 					</el-button>
 					<div v-show="isOpen" class="fixed inset-0 z-0" @click="isOpen = !isOpen" />
@@ -25,7 +25,7 @@
 						</div>
 						<template v-for="(tier, index) in tiers" :key="tier.name">
 							<div class="flex flex-row items-center space-x-6 mb-[10px]">
-								<el-button type="danger" class="aspect-1" size="large" @click="removeTier(index)">
+								<el-button type="danger" class="aspect-square" size="large" @click="removeTier(index)">
 									<font-awesome-icon icon="fas fa-trash-alt" />
 								</el-button>
 								<AniInput class="shrink ani-input-tier" background="body" v-model="tier.name" />

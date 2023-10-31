@@ -1,36 +1,40 @@
 <template>
 	<div class="relative group">
-		<NuxtImg loading="lazy" class="z-0 flex object-cover h-full p-0 aspect-w-2 aspect-h-3" :src="content.media.coverImage.medium" width="100" height="150" alt="" />
+		<NuxtImg loading="lazy" class="z-0 flex object-cover h-full p-0 aspect-[2/3]" :src="content.media.coverImage.medium" width="100" height="150" alt="" />
 		<el-popover placement="right" trigger="click" popper-style="padding:0;width:max-content;">
 			<template #reference>
 				<font-awesome-icon class="absolute invisible p-1 rounded-full cursor-pointer group-hover:visible z-5 text-aniWhite bottom-2 right-2 hover:bg-aniWhite hover:text-aniGray" icon="fa-solid fa-ellipsis-h" />
 			</template>
-			<div class="z-50 flex justify-between overflow-hidden rounded-[3px] h-max w-min min-w-[275px] bg-aniWhite">
+			<div class="z-50 flex justify-between overflow-hidden rounded-[3px] h-max w-[275px] bg-aniWhite">
 				<div class="flex flex-col w-full h-full bg-aniWhite">
 				<div class="flex flex-col h-full p-4 gap-y-2 grow">
 					<div class="flex justify-between">
 						<div class="flex flex-col gap-y-1">
-							<span class="text-xs font-semibold text-[#6E859E]">{{ content.media.format }}</span>
-							<span class="font-[Overpass] font-semibold text-lg leading-none text-aniGray flex-nowrap w-max pr-2">{{ content.media.title.userPreferred }}</span>
-							<div class="leading-3">
-								<template v-for="studio in content.media.studios.edges" :key="studio.name">
-									<NuxtLink v-if="studio.isMain" :to="studio.node.siteUrl" class="inline text-xs font-bold text-aniPrimary hover:text-aniPrimary/75">
-										{{ studio.node.name }} &nbsp;
+							<span class="text-xs font-semibold text-[#6E859E]">{{ content.media.format }}
+								<span v-if="content.media.episodes && content.media.episodes > 1"> • {{ content.media.episodes }} episodes</span>
+								<span v-else> • {{ getFormattedTime(content.media.duration) }}</span>
+							</span>
+							<NuxtLink :to="content.media.siteUrl" target="_blank" class="font-[Overpass] font-semibold text-lg leading-none text-aniGray flex-wrap w-full pr-2 hover:text-aniGray/75">{{ content.media.title.userPreferred }}</NuxtLink>
+							<div class="inline text-xs font-bold leading-3 text-aniPrimary ">
+								<template v-for="(studio, index) in getMainStudios(content.media.studios.edges)" :key="studio.name">
+									<NuxtLink :to="studio.node.siteUrl" target="_blank" class="hover:text-aniPrimary/75">
+										{{ studio.node.name }}
 									</NuxtLink>
+									<span v-if="index < getMainStudios(content.media.studios.edges).length - 1">, </span>
 								</template>
 							</div>
 						</div>
 					</div>
-					<el-scrollbar class="overflow-auto max-h-36">
+					<el-scrollbar max-height="144px">
 						<p class="text-[11px] leading-4 text-[#6E859E] font-medium" v-html="content.media.description"></p>
 					</el-scrollbar>
-					<div class="flex justify-center">
-						<div class="grid grid-cols-2 gap-y-4 gap-x-6">
+					<div class="flex justify-center gap-x-2">
+						<div class="grid grid-cols-2 my-2 gap-y-4 gap-x-6">
 							<Stat title="Your score" :value="content.score + ' / 10'">
 								<template #icon>
 									<font-awesome-icon icon="far fa-smile" v-if="content.score >= 8" class="text-3xl text-aniGreen" />
 									<font-awesome-icon icon="far fa-meh" v-else-if="content.score < 8 && content.score >= 6" class="text-3xl text-aniOrange" />
-									<font-awesome-icon icon="far fa-frown" v-else="content.score < 6" class="text-3xl text-aniRed" />
+									<font-awesome-icon icon="far fa-frown" v-else class="text-3xl text-aniRed" />
 								</template>
 							</Stat>
 							<Stat title="Ranking" :value="getRank(content.media.rankings)">
@@ -52,15 +56,32 @@
 							</Stat>
 						</div>
 					</div>
+					<div class="flex justify-between h-min">
+						<template v-if=(content.media.trailer)>
+							<div :style="`background-image: url(${content.media.trailer?.thumbnail})`" class="rounded shrink relative cursor-pointer w-[178px] h-[100px] bg-[50%] bg-cover" @click="isVideoOpened = true">
+								<font-awesome-icon icon="far fa-play-circle" class="absolute text-3xl -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 text-aniWhite" />
+							</div>
+							<el-dialog v-model="isVideoOpened" :show-close="false" align-center destroy-on-close class="trailer-wrapper">
+								<iframe :src="'https://www.youtube.com/embed/' + content.media.trailer.id + '?autoplay=1&autohide=1'" allow="autoplay" frameborder="0" class="trailer"></iframe>
+							</el-dialog>
+						</template>
+						<el-scrollbar max-height="100px">
+							<div class="gap-1 w-fit" :class="[content.media.trailer ? 'grid grid-cols-2' : 'flex flex-wrap']">
+								<template v-for="link in content.media.externalLinks" :key="link.url">
+									<ExternalLink :color="link.color" :url="link.url" :site="link.site"/>
+								</template>
+							</div>
+						</el-scrollbar>
+					</div>
 				</div>
 				<div class="grid grid-cols-3 w-full items-center bg-[#EFF7FB] px-4 h-[44px]">
 					<div class="flex flex-wrap items-center h-5 col-span-2 overflow-hidden grow gap-x-2">
-						<span v-for="genre in content.media.genres" class="flex items-center h-full px-3 text-xs font-bold leading-5 text-center align-middle rounded-full bg-aniPrimary text-aniWhite" :key="genre">{{ genre }}</span>
+						<span v-for="genre in content.media.genres" class="flex items-center h-full px-3 text-xs font-bold leading-none text-center align-middle rounded-full bg-aniPrimary text-aniWhite" :key="genre">{{ genre }}</span>
 					</div>
 					<div class="flex justify-end col-span-1">
-						<button class="flex justify-center items-center bg-[#E85D75] h-5 w-5 rounded-full cursor-pointer">
-							<font-awesome-icon @click="$emit('deleted');" icon="fas fa-trash" class="text-aniWhite text-[10px]" />
-						</button>
+						<el-button type="danger" circle size="small" color="#E85D75" class="group" plain @click="$emit('deleted');">
+							<font-awesome-icon icon="fas fa-trash" class="text-aniRed group-focus:text-aniWhite group-hover:text-aniWhite text-[10px]" />
+						</el-button>
 					</div>
 				</div>
 			</div>
@@ -73,13 +94,14 @@
 import type { NuxtImg } from 'nuxt/dist/app/components/nuxt-stubs';
 
 const props = defineProps<{
-	content: Object,
+	content: any,
 }>()
 
-//Get the rank of all time
+const isVideoOpened = ref(false);
+
 const getRank = (rankings: any) => {
 	let rank = "-"
-	rankings.forEach(element => {
+	rankings.forEach((element:any) => {
 		if(element.allTime && element.type ==='RATED') {
 			rank = element.rank
 		}
@@ -87,6 +109,61 @@ const getRank = (rankings: any) => {
 	return rank
 }
 
+const getMainStudios = (studios: Array<any>) => {
+	let mainStudios:Array<any> = new Array<any>()
+	studios.forEach((studio:any) => {
+		if(studio.isMain) {
+			mainStudios.push(studio)
+		}
+	})
+	return mainStudios
+}
+
+const getFormattedTime = (totalMinutes: number) => {
+	const hours = Math.floor(totalMinutes / 60);
+	const minutes = totalMinutes % 60;
+	return `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minute${minutes > 1 ? 's' : ''}`;
+}
 </script>
 
 
+<style>
+
+.el-scrollbar {
+	--el-scrollbar-opacity: 0.4;
+	--el-scrollbar-bg-color: var(--color-scroll-bar);
+	--el-scrollbar-hover-opacity: 0.8;
+	--el-scrollbar-hover-bg-color: var(--color-scroll-bar)
+}
+
+.trailer-wrapper {
+	position: fixed;
+    height: 45vw;
+    left: 10vw!important;
+    top: calc(50vh - 22.5vw)!important;
+    width: 80vw;
+	z-index: 999;
+	overflow: hidden;
+	border-radius: 4px;
+	padding: 0;
+}
+
+.trailer-wrapper .el-dialog__body {
+	padding: 0 !important;
+	width: 100%;
+	height: 100%;
+}
+
+.trailer-wrapper .el-dialog__header {
+	display: none;
+}
+
+.trailer-wrapper .el-dialog__footer {
+	display: none;
+}
+
+.trailer {
+	width: 100%;
+	height: 100%;
+}
+</style>

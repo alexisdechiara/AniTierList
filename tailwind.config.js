@@ -1,18 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./components/**/*.{js,vue,ts}",
-    "./layouts/**/*.vue",
-    "./pages/**/*.vue",
-    "./plugins/**/*.{js,ts}",
-    "./app.vue",
-    "./error.vue",
-  ],
-  theme: {
+	content: ["./components/**/*.{js,vue,ts}", "./layouts/**/*.vue", "./pages/**/*.vue", "./plugins/**/*.{js,ts}", "./app.vue", "./error.vue"],
+	theme: {
 		fontFamily: {
-			sans: [
-				"Overpass",
-			],
+			sans: ["Overpass"],
 		},
 		extend: {
 			colors: {
@@ -45,7 +36,6 @@ module.exports = {
 		},
 	],
 	corePlugins: {
-    aspectRatio: false,
-  },
-	plugins: [require("@tailwindcss/aspect-ratio")],
-}
+		aspectRatio: false,
+	},
+};
