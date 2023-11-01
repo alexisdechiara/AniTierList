@@ -1,21 +1,21 @@
 <template>
-  <label :for="linkedTo" :class="{ 'block font-[overpass] text-[#516170] text-capitalize font-semibold text-base text-[15px] leading-[17px] py-[10px]': linkedTo != null }">
-    <span v-if="text != null" class="block text-[#516170] text-capitalize font-semibold text-base text-[15px] leading-[17px] py-[10px]">{{ text }}</span>
-    <slot name="input"></slot>
-  </label>
+	<label :for="linkedTo" :class="{ 'text-capitalize block py-[10px] font-[overpass] text-[15px] text-base font-semibold leading-[17px] text-[#516170]': linkedTo != null }">
+		<span v-if="text != null" class="text-capitalize block py-[10px] text-[15px] text-base font-semibold leading-[17px] text-[#516170]">{{ text }}</span>
+		<slot name="input"></slot>
+	</label>
 </template>
 
 <script>
 export default {
-  name: "AniLabel",
-  created() { },
-  data() {
-    return {};
-  },
-  props: {
-    text: String,
-    linkedTo: String
-  },
-  methods: {},
+	name: "AniLabel",
+	props: {
+		text: String,
+		linkedTo: String,
+	},
+	data() {
+		return {};
+	},
+	created() {},
+	methods: {},
 };
 </script>

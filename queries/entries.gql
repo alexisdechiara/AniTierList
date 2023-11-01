@@ -1,65 +1,65 @@
 query entries($username: String) {
-    MediaListCollection(userName: $username, type: ANIME) {
-        lists {
-            entries {
-                score(format: POINT_10_DECIMAL)
-                media {
-                    id
-                    title {
-                        romaji
-                        english
-                        userPreferred
-                    }
-                    format
-                    season
-                    seasonYear
-                    genres
-                    episodes
-                    duration
-                    isFavourite
-                    studios(isMain: true) {
-                        edges {
-                            isMain
-                            node {
-                                name
-                                siteUrl
-                            }
-                        }
-                    }
-                    externalLinks {
-                        language
-                        color
-                        site
-                        url
-                    }
-                    trailer {
-                        id
-                        site
-                        thumbnail
-                    }
-                    rankings {
-                        allTime
-                        type
-                        rank
-                    }
-                    favourites
-                    averageScore
-                    description
-                    siteUrl
-                    coverImage {
-                        medium
-                        large
-                        extraLarge
-                    }
-                    relations {
-                        edges {
-                            relationType
-                        }
-                    }
-                    status
-                    siteUrl
-                }
-            }
-        }
-    }
+	MediaListCollection(userName: $username, type: ANIME) {
+		lists {
+			entries {
+				score(format: POINT_10_DECIMAL)
+				media {
+					id
+					title {
+						romaji
+						english
+						userPreferred
+					}
+					format
+					season
+					seasonYear
+					genres
+					episodes
+					duration
+					isFavourite
+					studios(isMain: true) {
+						edges {
+							isMain
+							node {
+								name
+								siteUrl
+							}
+						}
+					}
+					externalLinks {
+						language
+						color
+						site
+						url
+					}
+					trailer {
+						id
+						site
+						thumbnail
+					}
+					rankings {
+						allTime
+						type
+						rank
+					}
+					favourites
+					averageScore
+					description
+					siteUrl
+					coverImage {
+						medium
+						large
+						extraLarge
+					}
+					relations {
+						edges {
+							relationType
+						}
+					}
+					status
+					siteUrl
+				}
+			}
+		}
+	}
 }

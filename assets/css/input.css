@@ -1,75 +1,83 @@
 .ani-select-template .el-input__wrapper {
-	 background-color: #f2f4f7 !important;
-	 box-shadow: none !important;
+	background-color: #f2f4f7 !important;
+	box-shadow: none !important;
 }
- .ani-select-template.el-select .el-input div.el-input__wrapper.is-focus {
-	 background-color: #f2f4f7 !important;
-	 box-shadow: none !important;
+.ani-select-template.el-select .el-input div.el-input__wrapper.is-focus {
+	background-color: #f2f4f7 !important;
+	box-shadow: none !important;
 }
- .ani-input-username .el-input__wrapper, .ani-input-tier .el-input__wrapper {
-	 background-color: #f2f4f7 !important;
-	 box-shadow: none !important;
-	 --el-border-radius-base: 4px;
+.ani-input-username .el-input__wrapper,
+.ani-input-tier .el-input__wrapper {
+	background-color: #f2f4f7 !important;
+	box-shadow: none !important;
+	--el-border-radius-base: 4px;
 }
- .ani-input-username .el-input__wrapper .el-input__inner, .ani-input-tier .el-input__wrapper .el-input__inner {
-	 color: #5f7189;
-	 line-height: 40px;
-	 height: 40px;
-	 font-weight: 600;
-	 font-size: 14px;
-	 font-family: sans-serif;
+.ani-input-username .el-input__wrapper .el-input__inner,
+.ani-input-tier .el-input__wrapper .el-input__inner {
+	color: #5f7189;
+	line-height: 40px;
+	height: 40px;
+	font-weight: 600;
+	font-size: 14px;
+	font-family: sans-serif;
 }
- .ani-input-username .el-input__wrapper .el-input__inner::placeholder, .ani-input-tier .el-input__wrapper .el-input__inner::placeholder {
-	 font-weight: 400;
+.ani-input-username .el-input__wrapper .el-input__inner::placeholder,
+.ani-input-tier .el-input__wrapper .el-input__inner::placeholder {
+	font-weight: 400;
 }
- .el-input__wrapper {
-	 align-items: center;
-	 --el-select-input-focus-border-color: none;
-	 --el-input-border-radius: 6px;
-	 --el-input-bg-color: #fbfbfb;
-	 padding: 11px 16px !important;
-	 height: 40px;
-	 box-shadow: rgba(103, 132, 187, 0.1) 0px 14px 30px 0px, rgba(103, 132, 187, 0.04) 0px 4px 4px 0px !important;
+.el-input__wrapper {
+	align-items: center;
+	--el-select-input-focus-border-color: none;
+	--el-input-border-radius: 6px;
+	--el-input-bg-color: #fbfbfb;
+	padding: 11px 16px !important;
+	height: 40px;
+	box-shadow:
+		rgba(103, 132, 187, 0.1) 0px 14px 30px 0px,
+		rgba(103, 132, 187, 0.04) 0px 4px 4px 0px !important;
 }
- .el-input__inner {
-	 line-height: 40px;
-	 font-weight: 600;
-	 font-size: 13px;
+.el-input__inner {
+	line-height: 40px;
+	font-weight: 600;
+	font-size: 13px;
 }
- .el-input__inner::placeholder {
-	 color: #adc0d2 !important;
-	 font-weight: 600px !important;
+.el-input__inner::placeholder {
+	color: #adc0d2 !important;
+	font-weight: 600px !important;
 }
- .el-input__inner__prefix-inner {
-	 color: #c9d7e3;
+.el-input__inner__prefix-inner {
+	color: #c9d7e3;
 }
- .el-input__inner__suffix-iner {
-	 color: #c9d7e3;
+.el-input__inner__suffix-iner {
+	color: #c9d7e3;
 }
- .el-input__inner__suffix-iner:hover {
-	 color: #afbfd1;
+.el-input__inner__suffix-iner:hover {
+	color: #afbfd1;
 }
- .el-select .el-input div.el-input__wrapper.is-focus {
-	 box-shadow: rgba(103, 132, 187, 0.1) 0px 14px 30px 0px, rgba(103, 132, 187, 0.04) 0px 4px 4px 0px !important;
+.el-select .el-input div.el-input__wrapper.is-focus {
+	box-shadow:
+		rgba(103, 132, 187, 0.1) 0px 14px 30px 0px,
+		rgba(103, 132, 187, 0.04) 0px 4px 4px 0px !important;
 }
- .el-select-dropdown {
-	 border-radius: 6px !important;
+.el-select-dropdown {
+	border-radius: 6px !important;
 }
- .el-select-dropdown__list {
-	 padding: 10px !important;
+.el-select-dropdown__list {
+	padding: 10px !important;
 }
- .el-select-dropdown__item {
-	 --el-text-color-regular: #748899;
-	 border-radius: 4px;
-	 cursor: pointer;
-	 font-size: 14px;
-	 font-weight: 600;
-	 padding-right: 12px;
-	 padding-left: 12px;
-	 transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
-	 white-space: normal;
+.el-select-dropdown__item {
+	--el-text-color-regular: #748899;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 600;
+	padding-right: 12px;
+	padding-left: 12px;
+	transition:
+		background 0.2s ease-in-out,
+		color 0.2s ease-in-out;
+	white-space: normal;
 }
- .el-select-dropdown__item:hover {
-	 color: #3db4f2 !important;
+.el-select-dropdown__item:hover {
+	color: #3db4f2 !important;
 }
- 

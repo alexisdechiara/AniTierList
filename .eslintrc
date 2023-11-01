@@ -1,0 +1,4 @@
+{
+	"extends": ["@nuxt/eslint-config", "plugin:prettier/recommended", "@vue/eslint-config-prettier/skip-formatting"],
+	"plugins": ["tailwindcss"]
+}

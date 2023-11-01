@@ -1,5 +1,5 @@
 <template>
-	<el-slider class="w-full" v-model="value" @input="updateValue()" :disabled="disabled" range :marks="marks" :min="0" :step="0.1" show-stops :max="10" />
+	<el-slider v-model="value" class="w-full" :disabled="disabled" range :marks="marks" :min="0" :step="0.1" show-stops :max="10" @input="updateValue()" />
 </template>
 
 <script lang="ts" setup>
@@ -19,7 +19,7 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"]);
 
 function updateValue() {
-	emit("update:modelValue", [value._rawValue[0], value._rawValue[1]]);
+	emit("update:modelValue", [value.value._rawValue[0], value.value._rawValue[1]]);
 }
 
 type Marks = Record<number, Mark | string>;
@@ -70,7 +70,7 @@ const marks = reactive<Marks>({
 		width: 8px;
 	}
 
-	&__button-wrapper+.el-slider__button-wrapper>.el-slider__button {
+	&__button-wrapper + .el-slider__button-wrapper > .el-slider__button {
 		background-color: #3db4f2;
 		opacity: 0.7;
 	}

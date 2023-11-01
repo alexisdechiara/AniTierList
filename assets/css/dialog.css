@@ -1,6 +1,6 @@
 .el-dialog__title {
-	 font-weight: 600;
+	font-weight: 600;
 }
- .el-dialog__body {
-	 padding: 20px !important;
+.el-dialog__body {
+	padding: 20px !important;
 }

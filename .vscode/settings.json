@@ -1,10 +1,29 @@
 {
-    "nuxt.isNuxtApp": false,
-    "files.associations": {
-    "*.css": "tailwindcss"
-    },
-    "editor.quickSuggestions": {
-        "strings": true
-    },
-    "typescript.tsdk": "node_modules\\typescript\\lib"
+	"nuxt.isNuxtApp": false,
+	"files.associations": {
+		"*.css": "tailwindcss"
+	},
+	"editor.quickSuggestions": {
+		"strings": true
+	},
+	"typescript.tsdk": "node_modules\\typescript\\lib",
+
+	"nuxtr.snippets.nitro": true,
+	"nuxtr.vueFiles.firstTag": "template",
+	"nuxtr.vueFiles.script.type": "setup",
+	"nuxtr.vueFiles.script.defaultLanguage": "ts",
+	"nuxtr.vueFiles.style.addStyleTag": true,
+	"nuxtr.vueFiles.style.alwaysScoped": true,
+	"nuxtr.vueFiles.style.defaultLanguage": "css",
+	"nuxtr.openItemsAfterCreation": true,
+	"files.autoSave": "onFocusChange",
+	"editor.tabSize": 2,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"prettier.arrowParens": "avoid",
+	"prettier.bracketSameLine": true,
+	"prettier.printWidth": 180,
+	"eslint.format.enable": true,
+	"prettier.useTabs": true,
+	"prettier.vueIndentScriptAndStyle": true,
+	"nuxtr.defaultPackageManager": "pnpm"
 }
