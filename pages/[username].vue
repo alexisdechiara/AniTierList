@@ -1,5 +1,8 @@
+<!-- eslint-disable vue/return-in-computed-property -->
+<!-- eslint-disable vue/no-async-in-computed-properties -->
+<!-- eslint-disable vue/no-side-effects-in-computed-properties -->
 <template>
-	<div class="flex items-center justify-center h-full">
+	<div class="flex h-full items-center justify-center">
 		<div class="mx-32 flex max-h-full min-h-screen flex-col px-[30px]">
 			<div class="my-[40px] flex flex-row items-end space-x-6">
 				<AniInput v-model.lazy="filters.search" label="Search" search clearable />
@@ -18,7 +21,7 @@
 								<el-option label="Logarithmic" :value="0" />
 								<el-option label="Linear" :value="1" />
 							</el-select>
-							<div class="flex flex-row items-end grow">
+							<div class="flex grow flex-row items-end">
 								<el-button type="primary" class="grow" size="large" @click="[removeAllTiersEntries(), (autoRank = true), setEntries(entries)]">Auto rank anime</el-button>
 								<el-button type="danger" class="grow" size="large" @click="[(autoRank = false), removeTiersEntries()]">Unrank all anime</el-button>
 							</div>
@@ -72,6 +75,9 @@ export default {
 		ElDialog,
 		ElEmpty,
 	},
+	setup () {
+		const store = useEntriesStore();
+	},
 	data() {
 		return {
 			downloadDialogVisible: ref(false),
@@ -101,18 +107,20 @@ export default {
 	},
 	computed: {
 		async getAllEntries() {
-			const route = useRoute();
-			const { data } = await useAsyncGql({
-				operation: "entries",
-				variables: { username: route.params.username },
-			});
-			this.isLoaded = true;
-			const result = data.value.MediaListCollection.lists[0].entries;
-			this.entries = result.sort((a, b) => b.score - a.score);
-			if (route.query.seasons != null) this.filters.seasons = true;
-			if (route.query.min != null && route.query.min != 0 && route.query.min <= 10) this.filters.range[0] = route.query.min;
-			if (route.query.max != null && route.query.max != 10 && route.query.max >= this.filters.range[0]) this.filters.range[1] = route.query.max;
+			const route = useRoute()
+			const store = useEntriesStore();
+			this.isLoaded = await store.fetchAllData(route.params.username);
+			if (route.query.seasons != null && route.query.seasons == "false") {
+				store.setEntriesByFranchise()
+			} else {
+				store.setEntriesBySeasons()
+			}
+			store.sortEntriesByScore();
+			if (route.query.min != null && route.query.min != 0 && route.query.min <= 10) store.setFilterMinimumRange(route.query.min);
+			if (route.query.max != null && route.query.max != 10 && route.query.max >= 0) store.setFilterMinimumRange(route.query.max);
+			this.filters.range = store.getAllFilters.range;
 			this.autoRank = route.query.auto != null ? true : false;
+			this.entries = store.getAllEntries
 			this.setEntries(this.entries);
 		},
 	},
@@ -127,6 +135,48 @@ export default {
 		});
 	},
 	methods: {
+		removeSeason(entryId) {
+			const entry = this.entries.find((entry) => entry.media.id === entryId);
+			const values = {
+				episodes: [].push(entry.media.episodes || 1),
+				averageScore: [].push(entry.media.averageScore),
+				score: [].push(entry.score),
+				format: [].push(entry.media.format),
+				season: [].push(entry.media.season),
+				seasonYear: [].push(entry.media.seasonYear),
+			};
+			let res = {};
+			if (entry.media.relations) {
+				entry.media.relations.edges.forEach((edge) => {
+					if (edge.node.format != "MANGA" || edge.node.format != "NOVEL" || edge.node.format != "ONE_SHOT" || edge.node.format != "MUSIC") {
+						if (edge.relationType === "SEQUEL" && Date(edge.node.startDate.year, edge.node.startDate.month, edge.node.startDate.day) > Date(entry.media.startDate.year, entry.media.startDate.month, entry.media.startDate.day)) {
+							this.entries.splice(
+								this.entries.findIndex((entry) => entry.media.id === edge.node.id),
+								1,
+							);
+							res = this.removeSeason(edge.node.id);
+						} else if (edge.relationType === "PREQUEL" && Date(edge.node.startDate.year, edge.node.startDate.month, edge.node.startDate.day) > Date(entry.media.startDate.year, entry.media.startDate.month, entry.media.startDate.day)) {
+							this.entries.splice(
+								this.entries.findIndex((entry) => entry.media.id === edge.node.id),
+								1,
+							);
+							res = this.removeSeason(edge.node.id);
+						} else {
+							console.log(values);
+							return values;
+						}
+					}
+					return {
+						episodes: values.episodes.concat(res.media.episodes || 1),
+						averageScore: values.averageScore.concat(res.media.averageScore),
+						score: values.score.concat(res.score),
+						format: values.format.concat(res.media.format),
+						season: values.season.concat(res.media.season),
+						seasonYear: values.seasonYear.concat(res.media.seasonYear),
+					};
+				});
+			}
+		},
 		removeTier(index) {
 			this.unRankedTier.push(...this.tiers[index].entries);
 			this.tiers.splice(index, 1);
@@ -169,6 +219,7 @@ export default {
 					this.unRankedTier.push(entry);
 				}
 			});
+			this.isLoaded = true;
 		},
 		changeTiersTemplate(template) {
 			if (this.tiers.length > 0) {

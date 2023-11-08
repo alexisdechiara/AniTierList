@@ -28,7 +28,7 @@ export default defineNuxtConfig({
 		},
 	},
 
-	modules: ["@element-plus/nuxt", "@nuxtjs/tailwindcss", "@nuxtjs/eslint-module", "nuxt-graphql-client", "@nuxt/image", "@vueuse/nuxt", "nuxt-icon"],
+	modules: ["@element-plus/nuxt", "@nuxtjs/tailwindcss", "@nuxtjs/eslint-module", "@pinia/nuxt", "nuxt-graphql-client", "@nuxt/image", "@vueuse/nuxt", "nuxt-icon"],
 
 	css: ["@fortawesome/fontawesome-svg-core/styles.css"],
 
@@ -41,6 +41,6 @@ export default defineNuxtConfig({
 	},
 
 	devtools: {
-		enabled: false,
+		enabled: true,
 	},
 });

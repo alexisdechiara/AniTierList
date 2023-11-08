@@ -25,5 +25,11 @@
 	"eslint.format.enable": true,
 	"prettier.useTabs": true,
 	"prettier.vueIndentScriptAndStyle": true,
-	"nuxtr.defaultPackageManager": "pnpm"
+	"nuxtr.defaultPackageManager": "pnpm",
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[vue]": {
+		"editor.defaultFormatter": "Vue.volar"
+	}
 }

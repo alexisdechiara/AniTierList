@@ -10,8 +10,8 @@
 					<div class="flex h-full grow flex-col gap-y-2 p-4">
 						<div class="flex justify-between">
 							<div class="flex flex-col gap-y-1">
-								<span class="text-xs font-semibold text-[#6E859E]"
-									>{{ content.media.format }}
+								<span v-if="!content.isFranchise" class="text-xs font-semibold text-[#6E859E]">
+									{{ content.media.format }}
 									<span v-if="content.media.episodes && content.media.episodes > 1"> • {{ content.media.episodes }} episodes</span>
 									<span v-else> • {{ getFormattedTime(content.media.duration) }}</span>
 								</span>

@@ -27,6 +27,7 @@ export default {
 		transition: Boolean,
 		filters: Object,
 	},
+emits: ['update:value'],
 	data() {
 		return {
 			isEditable: false,
@@ -52,7 +53,7 @@ export default {
 			this.entries.splice(index, 1);
 		},
 		checkAll(element) {
-			return this.checkTitle(element.media.title) && this.checkYear(element.media.seasonYear) && this.checkSeason(element.media.season) && this.checkFormat(element.media.format) && this.checkGenre(element.media.genres) && this.checkScore(element.score) && this.checkIsSequel(element.media.relations.edges);
+			return this.checkTitle(element.media.title) && this.checkYear(element.media.seasonYear) && this.checkSeason(element.media.season) && this.checkFormat(element.media.format) && this.checkGenre(element.media.genres) && this.checkScore(element.score);
 		},
 		checkYear(year) {
 			if (this.filters.year != "") {
@@ -91,13 +92,6 @@ export default {
 			if (score != 0) {
 				return this.filters.range[0] <= score && score <= this.filters.range[1];
 			} else return false;
-		},
-		checkIsSequel(edges) {
-			if (this.filters.seasons === false) {
-				return !edges.some((edge) => edge.relationType == "PREQUEL");
-			} else {
-				return true;
-			}
 		},
 	},
 };
