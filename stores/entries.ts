@@ -1,9 +1,6 @@
-// store/filters.ts
 import { defineStore } from "pinia";
-import { Exception } from "sass";
 
-export const useEntriesStore = defineStore({
-	id: "entries",
+export const useEntriesStore = defineStore("entries",{
 	state: () => {
 		return {
 			data: {} as any,
@@ -26,11 +23,6 @@ export const useEntriesStore = defineStore({
 				variables: { username: username },
 			});
 			this.data = data;
-			if (this.data) {
-				return true;
-			} else {
-				false;
-			}
 		},
 		setEntries(type: String) {
 			if (type !== "franchise") {
@@ -61,7 +53,7 @@ export const useEntriesStore = defineStore({
 			this.setEntries("franchise");
 		},
 		sortEntriesByScore() {
-			this.entries = this.entries.sort((a: number, b: number) => b.score - a.score);
+			this.entries = this.entries.sort((a, b) => b.score - a.score);
 		},
 		setFilterMinimumRange(value: number) {
 			if (this.filters.range[1] > value) {

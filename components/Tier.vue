@@ -9,90 +9,76 @@
 	</div>
 </template>
 
-<script>
+<script setup>
 import draggable from "vuedraggable";
 import contenteditable from "vue-contenteditable";
 
-export default {
-	name: "Tier",
-	components: {
-		draggable,
-		contenteditable,
-	},
-	props: {
-		name: String,
-		color: String,
-		entries: Array,
-		group: String,
-		transition: Boolean,
-		filters: Object,
-	},
-emits: ['update:value'],
-	data() {
-		return {
-			isEditable: false,
-			value: this.name,
-			showDetail: false,
-		};
-	},
-	computed: {
-		dragOptions() {
-			return {
-				animation: 100,
-				group: "description",
-				disabled: false,
-				ghostClass: "ghost",
-			};
-		},
-	},
-	methods: {
-		enterPressed() {
-			this.$emit("update:value", this.value);
-		},
-		removeAt(index) {
-			this.entries.splice(index, 1);
-		},
-		checkAll(element) {
-			return this.checkTitle(element.media.title) && this.checkYear(element.media.seasonYear) && this.checkSeason(element.media.season) && this.checkFormat(element.media.format) && this.checkGenre(element.media.genres) && this.checkScore(element.score);
-		},
-		checkYear(year) {
-			if (this.filters.year != "") {
-				return year == this.filters.year;
+		const props = defineProps({
+			name: String,
+			color: String,
+			entries: Array,
+			group: String,
+			transition: Boolean,
+		});
+
+
+		const store = useEntriesStore();
+		const emit = defineEmits(["update:value"]);
+		const isEditable = ref(false);
+		const value = ref(props.name);
+
+		function enterPressed() {
+			emit("update:value", this.value);
+		}
+		
+		function removeAt(index) {
+			entries.value.splice(index, 1);
+		}
+
+		function checkAll(element) {
+			return checkTitle(element.media.title) && checkYear(element.media.seasonYear) && checkSeason(element.media.season) && checkFormat(element.media.format) && checkGenre(element.media.genres) && checkScore(element.score);
+		}
+		function checkYear(year) {
+			if (store.getAllFilters.year != "") {
+				return year == store.getAllFilters.year;
 			} else return true;
-		},
-		checkSeason(season) {
-			if (this.filters.season != "") {
-				return season == this.filters.season;
+		}
+		
+		function checkSeason(season) {
+			if (store.getAllFilters.season != "") {
+				return season == store.getAllFilters.season;
 			} else return true;
-		},
-		checkFormat(format) {
-			if (this.filters.formats.length > 0) {
-				return this.filters.formats.some((FilteredFormat) => FilteredFormat == format);
+		}
+
+		function checkFormat(format) {
+			if (store.getAllFilters.formats.length > 0) {
+				return store.getAllFilters.formats.some((FilteredFormat) => FilteredFormat == format);
 			} else return true;
-		},
-		checkGenre(genres) {
-			if (this.filters.genres.length > 0) {
-				return this.filters.genres.every((e) => genres.includes(e));
+		}
+
+		function checkGenre(genres) {
+			if (store.getAllFilters.genres.length > 0) {
+				return store.getAllFilters.genres.every((e) => genres.includes(e));
 			} else return true;
-		},
-		checkTitle(title) {
-			if (this.filters.search != "") {
+		}
+
+		function checkTitle(title) {
+			if (store.getAllFilters.search != "") {
 				let result = false;
 				for (const key in title) {
 					if (title[key] != null) {
-						if (title[key].toLowerCase().includes(this.filters.search)) {
+						if (title[key].toLowerCase().includes(store.getAllFilters.search)) {
 							result = true;
 						}
 					}
 				}
 				return result;
 			} else return true;
-		},
-		checkScore(score) {
+		}
+
+		function checkScore(score) {
 			if (score != 0) {
-				return this.filters.range[0] <= score && score <= this.filters.range[1];
+				return store.getAllFilters.range[0] <= score && score <= store.getAllFilters.range[1];
 			} else return false;
-		},
-	},
-};
+		}
 </script>
