@@ -19,8 +19,8 @@
 								<el-option label="Linear" :value="1" />
 							</el-select>
 							<div class="flex flex-row items-end grow">
-								<el-button type="primary" class="grow" size="large" @click="[removeAllTiersEntries(), (autoRank = true), setEntries(entries)]">Auto rank anime</el-button>
-								<el-button type="danger" class="grow" size="large" @click="[(autoRank = false), removeTiersEntries()]">Unrank all anime</el-button>
+								<el-button type="primary" class="grow" size="large" @click="tierStore.autoRankEntries()">Auto rank anime</el-button>
+								<el-button type="danger" class="grow" size="large" @click="tierStore.unrankAllTiersEntries()">Unrank all anime</el-button>
 							</div>
 						</div>
 						<template v-for="(tier, index) in tierStore.tiers" :key="tier.name">
@@ -42,9 +42,9 @@
 			<AniTags v-model="store.filters" />
 			<div v-if="isLoaded && store.getAllEntries.length > 0" id="tierList">
 				<div class="overflow-hidden rounded-[6px]">
-					<Tier v-for="tier in tierStore.tiers" :key="tier.name" v-model="tier.name" :name="tier.name" :color="tier.color" :entries="tier.entries" group="tier" transition :filters="store.filters" />
+					<Tier v-for="tier in tierStore.tiers" :key="tier.name" :name="tier.name" :color="tier.color" :entries="tier.entries"/>
 				</div>
-				<Tier class="mt-8" :entries="tierStore.unrankedTier" group="tier" transition :filters="store.filters" />
+				<Tier class="mt-8" :entries="tierStore.unrankedTier"/>
 			</div>
 			<AniLoader v-else-if="!isLoaded" />
 			<el-empty v-else description="No anime found, please check the username" />
@@ -57,32 +57,17 @@
 </template>
 
 <script setup>
-import draggable from "vuedraggable";
 import data from "../content/data.json";
 import templatesJSON from "../content/templates.json";
 
 const downloadDialogVisible = ref(false);
-// const tiers = ref([]);
-// const unRankedTier = ref([]);
-const filters = reactive({
-	search: "",
-	genres: [],
-	year: "",
-	season: "",
-	formats: [],
-	seasons: false,
-	range: [0, 10],
-});
 const years= ref([])
 const seasons= ref(data.seasons)
 const genres = ref([])
 const formats = ref(data.formats);
 const templates = ref(templatesJSON);
 const currentTemplate = ref(0);
-const entries = ref([]);
-const drag = ref(false);
 const isLoaded = ref(false);
-const autoRank = ref(false);
 const isOpen = ref(false);
 
 const store = useEntriesStore();
@@ -100,81 +85,17 @@ if (route.query.min != null && route.query.min != 0 && route.query.min <= 10) st
 if (route.query.max != null && route.query.max != 10 && route.query.max >= 0) store.setFilterMinimumRange(route.query.max);
 
 // Init datas
-onMounted(async () => {
-	tierStore.changeTiersTemplate(templates.value[currentTemplate.value])
-	// changeTiersTemplate(templates.value[currentTemplate.value]);	
+onMounted(() => {
 	for (let index = new Date().getFullYear(); index >= 1940; index--) {
 		years.value.push({ label: index, value: index });
 	}
 	data.genres.forEach((element) => {
 		genres.value.push({ label: element, value: element });
 	});
-	// autoRank.value = route.query.auto != null ? true : false;
-	// setEntries(store.getAllEntries);
+
+	tierStore.changeTiersTemplate(templates.value[currentTemplate.value])
 	tierStore.setAutoRank(route.query.auto != null ? true : false);
 	tierStore.setTiers(store.getAllEntries);
 	isLoaded.value = true;
 });
-
-// function setEntries(list) {
-// 	list.forEach((entry) => {
-// 		if (entry.score != 0 && autoRank.value) {
-// 			tiers.value.forEach((tier) => {
-// 				if (entry.score >= tier.range[0] && entry.score <= tier.range[1]) {
-// 					tier.entries.push(entry);
-// 				}
-// 			});
-// 		} else {
-// 			unRankedTier.value.push(entry);
-// 		}
-// 	});
-// 	isLoaded.value = true;
-// }
-
-// Actions 
-// function changeTiersTemplate(template) {
-// 	if (tiers.value.length > 0) {
-// 		removeTiersEntries();
-// 		tiers.value = [];
-// 	}
-// 	tiers.value = Array.from(template.value);
-// 	if (autoRank.value) {
-// 		setEntries(entries.value);
-// 	}
-// }
-
-// function removeTier(index) {
-// 	unRankedTier.value.push(...tiers[index].value.entries);
-// 	tiers.value.splice(index, 1);
-// }
-
-// function addTier() {
-// 	if (tiers.value.length >= templates[currentTemplate.value].value.length) {
-// 		const newTier = {
-// 			name: "New tier",
-// 			color: "#2B2D42",
-// 			range: [0, 0],
-// 			entries: [],
-// 		};
-// 		tiers.value.push(newTier);
-// 	} else {
-// 		tiers.value.push(templates[currentTemplate.value].value[tiers.value.length]);
-// 	}
-// }
-
-// function removeTiersEntries() {
-// 	tiers.value.forEach((tier) => {
-// 		unRankedTier.value.push(...tier.entries);
-// 		tier.entries = [];
-// 	});
-// }
-
-// function removeUnrankedTierEntries() {
-// 	unRankedTier.value = [];
-// }
-
-// function removeAllTiersEntries() {
-// 	removeTiersEntries();
-// 	removeUnrankedTierEntries();
-// }
 </script>

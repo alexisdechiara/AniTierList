@@ -38,6 +38,10 @@ export const useTierStore = defineStore({
       this.setAutoRank(autorank);
       this.setTiers(entries);
     },
+    autoRankEntries() {
+      this.setTiersAndAutoRank(this.unrankedTier, true)
+      this.removeUnrankedTierEntries();
+    },
     addTier() {
 			if (this.tiers.length >= this.templates[this.currentTemplate].value.length) {
         const newTier: Tier = {
@@ -57,8 +61,8 @@ export const useTierStore = defineStore({
 		},
     changeTiersTemplate(template: Template) {
 			if (this.tiers.length > 0) {
-				this.removeTiersEntries();
-				this.tiers = [];
+				this.unrankAllTiersEntries();
+				this.tiers = new Array();
 			}
 			this.tiers = Array.from(template.value);
 			if (this.autoRank) {
@@ -69,14 +73,17 @@ export const useTierStore = defineStore({
 		removeUnrankedTierEntries() {
 			this.unrankedTier = [];
 		},
-		removeTiersEntries() {
-			this.tiers.forEach((tier: any) => {
-				this.unrankedTier.push(...tier.entries);
-				tier = new Array();
+		unrankAllTiersEntries() {
+			this.tiers.forEach((tier: Tier) => {
+				this.unrankTierEntries(tier);
 			});
 		},
+    unrankTierEntries(tier: Tier) {
+      this.unrankedTier.unshift(...tier.entries);
+      tier.entries = new Array();
+    },
     removeAllTiersEntries() {
-      this.removeTiersEntries();
+      this.unrankAllTiersEntries();
       this.removeUnrankedTierEntries();
     }
   },

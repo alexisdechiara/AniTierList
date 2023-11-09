@@ -56,12 +56,12 @@ export const useEntriesStore = defineStore("entries",{
 			this.entries = this.entries.sort((a, b) => b.score - a.score);
 		},
 		setFilterMinimumRange(value: number) {
-			if (this.filters.range[1] > value) {
+			if (this.filters.range[1] >= value) {
 				this.filters.range[0] = value;
 			} else throw new Error("Minimum range cannot be greater than maximum range");
 		},
 		setFilterMaximumRange(value: number) {
-			if (this.filters.range[0] < value) {
+			if (this.filters.range[0] <= value) {
 				this.filters.range[1] = value;
 			} else throw new Error("Maximum range cannot be less than minimum range");
 		},

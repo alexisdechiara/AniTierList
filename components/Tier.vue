@@ -1,9 +1,9 @@
 <template>
 	<div class="flex min-h-[150px] flex-row">
 		<contenteditable v-if="name != null" v-model="value" tag="div" :contenteditable="isEditable" :no-nl="true" :no-html="true" :style="'background-color:' + color" class="break-word flex min-h-[150px] w-[200px] basis-auto items-center justify-center text-center text-3xl font-bold text-white focus:outline-none" @dblclick="isEditable = true" @focusout="isEditable = false" @returned="enterPressed()" />
-		<draggable class="flex w-full flex-row flex-wrap" :group="group" :list="entries" item-key="media.id">
+		<draggable class="flex flex-row flex-wrap w-full" group="tier" :list="entries" item-key="media.id">
 			<template #item="{ element, index }">
-				<Item v-show="checkAll(element)" :content="element" @deleted="removeAt(index)" />
+				<Item v-if="checkAll(element)" :content="element" @deleted="removeAt(index)" />
 			</template>
 		</draggable>
 	</div>
@@ -17,8 +17,6 @@ import contenteditable from "vue-contenteditable";
 			name: String,
 			color: String,
 			entries: Array,
-			group: String,
-			transition: Boolean,
 		});
 
 
@@ -28,7 +26,7 @@ import contenteditable from "vue-contenteditable";
 		const value = ref(props.name);
 
 		function enterPressed() {
-			emit("update:value", this.value);
+			emit("update:value", value.value);
 		}
 		
 		function removeAt(index) {
