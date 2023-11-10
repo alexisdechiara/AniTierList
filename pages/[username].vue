@@ -39,7 +39,7 @@
 					</div>
 				</div>
 			</div>
-			<AniTags v-model="store.filters" />
+			<AniTags />
 			<div v-if="isLoaded && store.getAllEntries.length > 0" id="tierList">
 				<div class="overflow-hidden rounded-[6px]">
 					<Tier v-for="tier in tierStore.tiers" :key="tier.name" :name="tier.name" :color="tier.color" :entries="tier.entries"/>

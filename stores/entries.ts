@@ -5,13 +5,13 @@ export const useEntriesStore = defineStore("entries",{
 		return {
 			data: {} as any,
 			entries: [] as any,
-			isLoaded: false as Boolean,
+			isLoaded: false as boolean,
 			filters: {
-				search: "" as String,
-				genres: [] as Array<String>,
-				year: "" as String | Number,
-				season: "" as String,
-				formats: [] as Array<String>,
+				search: null as string,
+				genres: [] as Array<string>,
+				year: "" as string | number,
+				season: "" as string,
+				formats: [] as Array<string>,
 				range: [0, 10],
 			},
 		};

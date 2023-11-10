@@ -22,7 +22,7 @@ const props = defineProps({
 const emit = defineEmits(["update:modelValue"]);
 
 function updateValue() {
-	emit("update:modelValue", [value.value._rawValue[0], value.value._rawValue[1]]);
+	emit("update:modelValue", [value.value[0], value.value[1]]);
 }
 
 type Marks = Record<number, Mark | string>;

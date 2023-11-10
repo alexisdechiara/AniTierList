@@ -1,7 +1,7 @@
 <template>
 	<AniLabel :text="label">
 		<template #input>
-			<el-input v-model="value" class="max-w-[170px]" :disabled="disabled" :clearable="clearable" @change="value" @keyup.enter="updateValue">
+			<el-input v-model="value" class="max-w-[170px]" :disabled="disabled" :clearable="clearable" @input="updateValue">
 				<template v-if="search" #prefix>
 					<font-awesome-icon icon="fa-solid fa-search" />
 				</template>
@@ -10,29 +10,44 @@
 	</AniLabel>
 </template>
 
-<script>
-import { ElInput } from "element-plus";
-export default {
-	name: "AniInput",
-	components: {
-		ElInput,
+<script setup lang="ts">
+
+const props = defineProps({
+  label: {
+		type: String,
+		required: true,
 	},
-	props: {
-		label: String,
-		modelValue: String,
-		disabled: Boolean,
-		search: Boolean,
-		clearable: Boolean,
+  modelValue: {
+		type: String,
+		required: true,
 	},
-	data() {
-		return {
-			value: this.modelValue,
-		};
+  disabled: {
+		type: Boolean,
+		required: false,
+		default: false,
 	},
-	methods: {
-		updateValue() {
-			emit("update:modelValue", this.value);
-		},
+  search: {
+		type: Boolean,
+		required: false,
+		default: false,
 	},
+  clearable: {
+		type: Boolean,
+		required: false,
+		default: false,
+	},
+});
+
+const emits = defineEmits(["update:modelValue"]);
+
+const value = ref(props.modelValue);
+
+function updateValue() {
+  emits('update:modelValue', value.value);
 };
+
+watch(() => props.modelValue, (newValue) => {
+  value.value = newValue;
+});
+
 </script>

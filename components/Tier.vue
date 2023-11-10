@@ -65,7 +65,7 @@ import contenteditable from "vue-contenteditable";
 				let result = false;
 				for (const key in title) {
 					if (title[key] != null) {
-						if (title[key].toLowerCase().includes(store.getAllFilters.search)) {
+						if (title[key].toLowerCase().includes(store.getAllFilters.search.toLowerCase())) {
 							result = true;
 						}
 					}
