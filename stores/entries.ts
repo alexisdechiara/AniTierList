@@ -5,15 +5,6 @@ export const useEntriesStore = defineStore("entries",{
 		return {
 			data: {} as any,
 			entries: [] as any,
-			isLoaded: false as boolean,
-			filters: {
-				search: null as string,
-				genres: [] as Array<string>,
-				year: "" as string | number,
-				season: "" as string,
-				formats: [] as Array<string>,
-				range: [0, 10],
-			},
 		};
 	},
 	actions: {
@@ -25,10 +16,11 @@ export const useEntriesStore = defineStore("entries",{
 			this.data = data;
 		},
 		setEntries(type: String) {
+			const filterStore = useFilterStore();
 			if (type !== "franchise") {
-				this.entries = this.data.MediaListCollection.lists[0].entries;
+				this.entries = this.data.MediaListCollection.lists[0].entries.filter((entry: any) => entry.score >= filterStore.getMinimumRange && entry.score <= filterStore.getMaximumRange);
 			} else {
-				this.data.MediaListCollection.lists[0].entries.forEach((entry: any) => {
+				this.data.MediaListCollection.lists[0].entries.filter((entry: any) => entry.score >= filterStore.getMinimumRange && entry.score <= filterStore.getMaximumRange).forEach((entry: any) => {
 					const filteredEntry = entry;
 					filteredEntry.media.relations.edges = entry.media.relations.edges.filter((edge: any) => edge.relationType === "SEQUEL" || edge.relationType === "PREQUEL" || edge.relationType === "SIDE_STORY" || edge.relationType === "SPIN_OFF");
 					if (!filteredEntry.media.relations.edges.some((edge: any) => new Date(edge.node.startDate.year, edge.node.startDate.month, edge.node.startDate.day).getTime() < new Date(entry.media.startDate.year, entry.media.startDate.month, entry.media.startDate.day).getTime())) {
@@ -53,17 +45,7 @@ export const useEntriesStore = defineStore("entries",{
 			this.setEntries("franchise");
 		},
 		sortEntriesByScore() {
-			this.entries = this.entries.sort((a, b) => b.score - a.score);
-		},
-		setFilterMinimumRange(value: number) {
-			if (this.filters.range[1] >= value) {
-				this.filters.range[0] = value;
-			} else throw new Error("Minimum range cannot be greater than maximum range");
-		},
-		setFilterMaximumRange(value: number) {
-			if (this.filters.range[0] <= value) {
-				this.filters.range[1] = value;
-			} else throw new Error("Maximum range cannot be less than minimum range");
+			this.entries = this.entries.sort((a: { score: number; }, b: { score: number; }) => b.score - a.score);
 		},
 	},
 	getters: {

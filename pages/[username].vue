@@ -2,11 +2,11 @@
 	<div class="flex items-center justify-center h-full">
 		<div class="mx-32 flex max-h-full min-h-screen flex-col px-[30px]">
 			<div class="my-[40px] flex flex-row items-end space-x-6">
-				<AniInput v-model.lazy="store.filters.search" label="Search" search clearable />
-				<AniSelect v-model.lazy="store.filters.genres" label="Genres" multiple :options="genres" />
-				<AniSelect v-model.lazy="store.filters.year" label="Year" :options="years" />
-				<AniSelect v-model.lazy="store.filters.season" label="Season" :options="seasons" />
-				<AniSelect v-model.lazy="store.filters.formats" label="Format" multiple :options="formats" />
+				<AniInput v-model.lazy="filterStore.search" label="Search" search clearable />
+				<AniSelect v-model.lazy="filterStore.genres" label="Genres" multiple :options="genres" />
+				<AniSelect v-model.lazy="filterStore.years" label="Year" multiple :options="years" />
+				<AniSelect v-model.lazy="filterStore.seasons" label="Season" multiple :options="seasons" />
+				<AniSelect v-model.lazy="filterStore.formats" label="Format" multiple :options="formats" />
 				<div class="relative grow">
 					<el-button class="aspect-square float-right w-[40px] hover:text-aniPrimary focus:bg-aniWhite" size="large" color="#fafafa" @click="isOpen = !isOpen">
 						<font-awesome-icon icon="fas fa-sliders-h" :class="[isOpen ? 'text-aniPrimary' : 'text-[#afbfd1]']" class="stroke-2 hover:text-aniPrimary focus:text-aniPrimary" />
@@ -70,9 +70,17 @@ const currentTemplate = ref(0);
 const isLoaded = ref(false);
 const isOpen = ref(false);
 
+// Pinia stores
 const store = useEntriesStore();
 const tierStore = useTierStore();
+const filterStore = useFilterStore();
+
+// Vue router
 const route = useRoute();
+
+// Read url params
+if (route.query.min != null && route.query.min != 0 && route.query.min <= 10) filterStore.setMinimumRange(route.query.min);
+if (route.query.max != null && route.query.max != 10 && route.query.max >= 0) filterStore.setMaximumRange(route.query.max);
 
 await store.fetchAllData(route.params.username);
 if (route.query.seasons != null && route.query.seasons == "false") {
@@ -81,16 +89,15 @@ if (route.query.seasons != null && route.query.seasons == "false") {
 	store.setEntriesBySeasons();
 }
 store.sortEntriesByScore();
-if (route.query.min != null && route.query.min != 0 && route.query.min <= 10) store.setFilterMinimumRange(route.query.min);
-if (route.query.max != null && route.query.max != 10 && route.query.max >= 0) store.setFilterMinimumRange(route.query.max);
 
 // Init datas
 onMounted(() => {
 	for (let index = new Date().getFullYear(); index >= 1940; index--) {
-		years.value.push({ label: index, value: index });
+		years.value.push({ label: String(index), value: Number(index) });
 	}
+
 	data.genres.forEach((element) => {
-		genres.value.push({ label: element, value: element });
+		genres.value.push({ label: String(element), value: String(element) });
 	});
 
 	tierStore.changeTiersTemplate(templates.value[currentTemplate.value])

@@ -25,7 +25,7 @@ defineProps({
 		required: false,
 	},
 	modelValue: {
-		type: Array<Option>,
+		type: [Array<number>, Array<string>, String, Number],
 		required: true,
 	},
 	options: {

@@ -4,7 +4,7 @@ import templatesJSON from "../content/templates.json";
 
 
 export const useTierStore = defineStore({
-  id: 'tierStore',
+  id: 'Tiers',
   state: () => ({
     tiers: [] as Array<Tier>,
     unrankedTier: [] as Array<any>,
