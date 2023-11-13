@@ -1,6 +1,6 @@
 <template>
 	<div class="relative group">
-		<NuxtImg class="aspect-[2/3] z-0 flex h-full object-cover p-0" :src="content.media.coverImage.medium" width="100" height="150" alt="" />
+		<NuxtImg loading="lazy" class="aspect-[2/3] z-0 flex h-full object-cover p-0" :src="content.media.coverImage.medium" width="100" height="150" alt="" />
 		<el-popover placement="right" trigger="click" popper-style="padding:0;width:max-content;">
 			<template #reference>
 				<font-awesome-icon class="absolute z-50 invisible p-1 rounded-full cursor-pointer bottom-2 right-2 text-aniWhite hover:bg-aniWhite hover:text-aniGray group-hover:visible" icon="fa-solid fa-ellipsis-h" />
@@ -17,7 +17,7 @@
 								</span>
 								<NuxtLink :to="content.media.siteUrl" target="_blank" class="flex-wrap w-full pr-2 text-lg font-semibold leading-none text-aniGray hover:text-aniGray/75">{{ content.media.title.userPreferred }}</NuxtLink>
 								<div class="inline text-xs font-bold leading-3 text-aniPrimary">
-									<template v-for="(studio, index) in getMainStudios(content.media.studios.edges)" :key="studio.name">
+									<template v-for="(studio, index) in getMainStudios(content.media.studios.edges)" :key="content.media.title.english + '-' + studio.name">
 										<NuxtLink :to="studio.node.siteUrl" target="_blank" class="hover:text-aniPrimary/75">
 											{{ studio.node.name }}
 										</NuxtLink>
@@ -77,7 +77,7 @@
 					</div>
 					<div class="grid h-[44px] w-full grid-cols-3 items-center bg-[#EFF7FB] px-4">
 						<div class="flex flex-wrap items-center h-5 col-span-2 overflow-hidden grow gap-x-2">
-							<span v-for="genre in content.media.genres" :key="genre" class="flex items-center h-full px-3 text-xs font-bold leading-none text-center align-middle rounded-full bg-aniPrimary text-aniWhite">{{ genre }}</span>
+							<span v-for="genre in content.media.genres" :key="content.media.title.english + '-' + genre " class="flex items-center h-full px-3 text-xs font-bold leading-none text-center align-middle rounded-full bg-aniPrimary text-aniWhite">{{ genre }}</span>
 						</div>
 						<div class="flex justify-end col-span-1">
 							<el-button type="danger" circle size="small" color="#E85D75" class="group" plain @click="$emit('deleted')">
@@ -97,6 +97,8 @@ import type { NuxtImg } from "nuxt/dist/app/components/nuxt-stubs";
 defineProps<{
 	content: any;
 }>();
+
+defineEmits(['deleted']);
 
 const isVideoOpened = ref(false);
 

@@ -56,5 +56,8 @@ export const useFilterStore = defineStore({
     getFormats(): Array<string> {
       return this.formats
     },
-  }
+  }, 
+  persist: {
+    storage: persistedState.localStorage,
+  },
 })

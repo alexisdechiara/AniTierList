@@ -20,6 +20,7 @@
 		"@nuxtjs/eslint-config-typescript": "^12.1.0",
 		"@nuxtjs/eslint-module": "^4.1.0",
 		"@nuxtjs/google-fonts": "^3.0.2",
+		"@pinia-plugin-persistedstate/nuxt": "^1.2.0",
 		"@rushstack/eslint-patch": "^1.5.1",
 		"@tailwindcss/aspect-ratio": "^0.4.2",
 		"@vue/eslint-config-prettier": "^8.0.0",

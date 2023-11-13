@@ -6,9 +6,18 @@
 
 <script lang="ts" setup>
 const props = defineProps({
-	site: String,
-	url: String,
-	color: String,
+	site: {
+		type: String,
+		required: true,
+	},
+	url: {
+		type: String,
+		required: true,
+	},
+	color: {
+		type: String,
+		default: null,
+	}
 });
 
 const padding = ref(true);
