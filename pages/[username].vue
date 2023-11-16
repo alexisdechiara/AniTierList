@@ -14,7 +14,7 @@
 					<div v-show="isOpen" class="fixed inset-0 z-0" @click="isOpen = !isOpen" />
 					<div v-show="isOpen" class="absolute right-0 top-10 z-10 mt-[10px] flex w-[800px] flex-col rounded-[10px] bg-aniWhite p-[40px] shadow-aniShadow">
 						<div class="mb-[30px] flex flex-row items-end space-x-6">
-							<el-select v-model="tierStore.currentTemplate" class="ani-select-template" placeholder="Template" @change="tierStore.changeTiersTemplate(templates[currentTemplate])">
+							<el-select v-model="tierStore.currentTemplate" class="ani-select-template" placeholder="Template" @change="tierStore.changeTiersTemplate(tierStore.templates[tierStore.currentTemplate])">
 								<el-option label="Logarithmic" :value="0" />
 								<el-option label="Linear" :value="1" />
 							</el-select>
@@ -58,15 +58,12 @@
 
 <script setup>
 import data from "../content/data.json";
-import templatesJSON from "../content/templates.json";
 
 const downloadDialogVisible = ref(false);
 const years= ref([])
 const seasons= ref(data.seasons)
 const genres = ref([])
 const formats = ref(data.formats);
-const templates = ref(templatesJSON);
-const currentTemplate = ref(0);
 const isLoaded = ref(false);
 const isOpen = ref(false);
 
@@ -75,20 +72,9 @@ const store = useEntriesStore();
 const tierStore = useTierStore();
 const filterStore = useFilterStore();
 
-// Vue router
-const route = useRoute();
-
-// Read url params
-if (route.query.min != null && route.query.min != 0 && route.query.min <= 10) filterStore.setMinimumRange(route.query.min);
-if (route.query.max != null && route.query.max != 10 && route.query.max >= 0) filterStore.setMaximumRange(route.query.max);
-
-await store.fetchAllData(route.params.username);
-if (route.query.seasons != null && route.query.seasons == "false") {
-	store.setEntriesByFranchise();
-} else {
-	store.setEntriesBySeasons();
-}
-store.sortEntriesByScore();
+definePageMeta({
+  middleware: "auth"
+})
 
 // Init datas
 onMounted(() => {
@@ -99,10 +85,6 @@ onMounted(() => {
 	data.genres.forEach((element) => {
 		genres.value.push({ label: String(element), value: String(element) });
 	});
-
-	tierStore.changeTiersTemplate(templates.value[currentTemplate.value])
-	tierStore.setAutoRank(route.query.auto != null ? true : false);
-	tierStore.setTiers(store.getAllEntries);
 	isLoaded.value = true;
 });
 </script>

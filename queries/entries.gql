@@ -1,7 +1,12 @@
-query entries($username: String) {
-	MediaListCollection(userName: $username, type: ANIME) {
+query entries($username: String, $completedAt: FuzzyDateInt = 10000000) {
+	MediaListCollection(userName: $username, type: ANIME, status: COMPLETED, completedAt_greater: $completedAt) {
 		lists {
 			entries {
+				completedAt {
+          year
+          month
+          day
+        }
 				score(format: POINT_10_DECIMAL)
 				media {
 					id
