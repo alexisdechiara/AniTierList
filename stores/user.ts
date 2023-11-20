@@ -1,4 +1,5 @@
 import type { AuthQuery } from "#gql";
+import { ScoreFormat, UserTitleLanguage } from "#gql/default";
 import { defineStore } from "pinia";
 
 export const useUserStore = defineStore({
@@ -11,13 +12,13 @@ export const useUserStore = defineStore({
 			medium: "" as string,
 		} as Avatar,
 		url: "" as string,
-		titleLanguage: "" as string,
+		titleLanguage: "" as UserTitleLanguage,
 		displayAdultContent: false as boolean,
 		profileColor: "" as string,
-		scoreFormat: "" as string,
+		scoreFormat: ScoreFormat.POINT_10_DECIMAL as ScoreFormat,
+		rowOrder: "" as string,
 		isLogged: false as boolean,
 		lastCompletedAt: Date.now() as number,
-		previousCompletedAt: Date.now() as number,
 	}),
 	actions: {
 		async fetchUserData(username: string) {
@@ -28,18 +29,15 @@ export const useUserStore = defineStore({
 			const user: AuthQuery["User"] = data.value.User;
 			if (user) {
 				this.id = user.id;
-				this.username = user.name;
+				this.username = username;
 				this.avatar = user.avatar;
 				this.url = user.siteUrl;
 				this.titleLanguage = user.options.titleLanguage;
 				this.displayAdultContent = user.options.displayAdultContent;
 				this.profileColor = user.options.profileColor;
-				this.scoreFormat = user.options.scoreFormat;
+				this.scoreFormat = user.mediaListOptions.scoreFormat;
 				this.isLogged = true;
 			} else throw Error("User not found");
-		},
-		setPreviousCompletedAt(value: number) {
-			this.previousCompletedAt = value;
 		},
 		setLastCompletedAt(value: number) {
 			this.lastCompletedAt = value;
@@ -47,6 +45,8 @@ export const useUserStore = defineStore({
 	},
 	getters: {
 		getUser: (state) => state,
+		getUsername: (state) => state.username,
+		getTitleLanguage: (state) => state.titleLanguage,
 	},
 	persist: {
 		storage: persistedState.localStorage,

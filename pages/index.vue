@@ -13,6 +13,16 @@
 				<AniMultiRangeSlider v-model="range" class="mb-[15px] w-11/12 self-center" />
 			</div>
 			<el-button type="primary" size="large" class="ani-button-search" :disabled="username == ''" @click="enterClicked()">Search</el-button>
+			<template v-if="userStore.getUsername">
+				<el-divider>OR CONTINUE</el-divider>
+				<div class="flex w-full h-16 gap-x-6 border rounded-aniRounded overflow-hidden items-center p-0 hover:shadow-md transition-shadow cursor-pointer" @click="continueClicked()">
+					<NuxtImg :src="userStore.getUser.avatar.medium" fit="cover" class="h-16 aspect-square" />
+					<div class="w-full flex flex-col">
+						<span class="font-bold text-aniGray">{{ userStore.getUsername }}</span>
+						<span v-if="tierStore.getAllEntries.length" class="font-normal text-aniGray">{{tierStore.getAllEntries.length}} entries</span>
+					</div>
+				</div>
+			</template>
 		</div>
 	</div>
 </template>
@@ -25,16 +35,33 @@ const range = ref<number[]>([0, 10]);
 const username = ref<string>('');
 const sequelRank = ref<boolean>(false);
 
-// Instance
-const router = useRouter();
+// Store
+const userStore = useUserStore();
+const tierStore = useTierStore();
 
 // Methods
 function enterClicked() {
 	const queries: any = {};
 	if (autoRank.value) queries["auto"] = true;
-	if (sequelRank.value) queries["franchise"] = true;
+	if (!sequelRank.value) queries["franchise"] = true;
 	if (range.value[0] != 0 && range.value[0] <= 10) queries["min"] = range.value[0];
-	if (range.value[1] != 10 && range.value[1] >= 0) queries["max"] = range.value[1];
-	if (username.value != "") router.push({ path: username.value, query: queries });
+	if (range.value[1] != 10 && range.value[1] >= 0) queries["max"] = range.value[1]; 
+	if (username.value != "") navigateTo({ path: username.value, query: queries });
+}
+
+function continueClicked() {
+	navigateTo(userStore.getUsername)
 }
 </script>
+
+<style>
+.el-divider {
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+.el-divider__text {
+	background-color: #fafafa;
+	font-size: 0.75em;
+	font-weight: 600;
+}
+</style>

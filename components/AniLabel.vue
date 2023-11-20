@@ -5,17 +5,17 @@
 	</label>
 </template>
 
-<script>
-export default {
-	name: "AniLabel",
-	props: {
-		text: String,
-		linkedTo: String,
+<script lang="ts" setup>
+defineProps({
+	text: {
+		type: String,
+		required: false,
+		default: null,
 	},
-	data() {
-		return {};
+	linkedTo: {
+		type: String,
+		required: false,
+		default: '',
 	},
-	created() {},
-	methods: {},
-};
+});
 </script>

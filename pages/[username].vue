@@ -19,7 +19,7 @@
 								<el-option label="Linear" :value="1" />
 							</el-select>
 							<div class="flex flex-row items-end grow">
-								<el-button type="primary" class="grow" size="large" @click="tierStore.autoRankEntries()">Auto rank anime</el-button>
+								<el-button type="primary" class="grow" size="large" @click="tierStore.autoRankTiers()">Auto rank anime</el-button>
 								<el-button type="danger" class="grow" size="large" @click="tierStore.unrankAllTiersEntries()">Unrank all anime</el-button>
 							</div>
 						</div>
@@ -40,7 +40,7 @@
 				</div>
 			</div>
 			<AniTags />
-			<div v-if="isLoaded && store.getAllEntries.length > 0" id="tierList">
+			<div v-if="isLoaded && tierStore.getAllEntries.length > 0" id="tierList">
 				<div class="overflow-hidden rounded-[6px]">
 					<Tier v-for="tier in tierStore.tiers" :key="tier.name" :name="tier.name" :color="tier.color" :entries="tier.entries"/>
 				</div>
@@ -68,7 +68,6 @@ const isLoaded = ref(false);
 const isOpen = ref(false);
 
 // Pinia stores
-const store = useEntriesStore();
 const tierStore = useTierStore();
 const filterStore = useFilterStore();
 

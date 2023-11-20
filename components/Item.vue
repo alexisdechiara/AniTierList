@@ -1,6 +1,6 @@
 <template>
 	<div class="relative group">
-		<NuxtImg loading="lazy" class="aspect-[2/3] z-0 flex h-full object-cover p-0" :src="content.media.coverImage.medium" width="100" height="150" alt="" />
+		<NuxtImg loading="lazy" class="aspect-[2/3] z-0 flex h-full object-cover p-0" :src="content.media.coverImage.medium" width="100" height="150" :placeholder="[50, 75, 75, 5]" />
 		<el-popover placement="right" trigger="click" popper-style="padding:0;width:max-content;">
 			<template #reference>
 				<font-awesome-icon class="absolute z-50 invisible p-1 rounded-full cursor-pointer bottom-2 right-2 text-aniWhite hover:bg-aniWhite hover:text-aniGray group-hover:visible" icon="fa-solid fa-ellipsis-h" />
@@ -15,7 +15,7 @@
 									<span v-if="content.media.episodes && content.media.episodes > 1"> • {{ content.media.episodes }} episodes</span>
 									<span v-else> • {{ getFormattedTime(content.media.duration) }}</span>
 								</span>
-								<NuxtLink :to="content.media.siteUrl" target="_blank" class="flex-wrap w-full pr-2 text-lg font-semibold leading-none text-aniGray hover:text-aniGray/75">{{ content.media.title.userPreferred }}</NuxtLink>
+								<NuxtLink :to="content.media.siteUrl" target="_blank" class="flex-wrap w-full pr-2 text-lg font-semibold leading-none text-aniGray hover:text-aniGray/75">{{ content.media.title[userStore.getTitleLanguage.toLowerCase()] || content.media.title.userPreferred }}</NuxtLink>
 								<div class="inline text-xs font-bold leading-3 text-aniPrimary">
 									<template v-for="(studio, index) in getMainStudios(content.media.studios.edges)" :key="content.media.title.english + '-' + studio.name">
 										<NuxtLink :to="studio.node.siteUrl" target="_blank" class="hover:text-aniPrimary/75">
@@ -93,6 +93,8 @@
 
 <script lang="ts" setup>
 import type { NuxtImg } from "nuxt/dist/app/components/nuxt-stubs";
+
+const userStore = useUserStore();
 
 defineProps<{
 	content: any;

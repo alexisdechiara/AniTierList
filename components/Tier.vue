@@ -43,9 +43,10 @@ import contenteditable from "vue-contenteditable";
 	});
 
 	const filterStore = useFilterStore();
-	const emit = defineEmits(["update:value"]);
+	const emit = defineEmits(["update:value", 'update:entries']);
 	const isEditable = ref(false);
 	const value = ref(props.name);
+	const newEntries = ref(props.entries);
 	const drag = ref(false);
 
 	const dragOptions = computed(() => {
@@ -62,7 +63,8 @@ import contenteditable from "vue-contenteditable";
 	}
 	
 	function removeAt(index) {
-		entries.value.splice(index, 1);
+		newEntries.value.splice(index, 1);
+		emit("update:entries", newEntries.value);
 	}
 
 	function checkAll(element) {
