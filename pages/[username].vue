@@ -7,7 +7,7 @@
 				<AniSelect v-model.lazy="filterStore.years" label="Year" multiple :options="years" />
 				<AniSelect v-model.lazy="filterStore.seasons" label="Season" multiple :options="seasons" />
 				<AniSelect v-model.lazy="filterStore.formats" label="Format" multiple :options="formats" />
-				<div class="relative grow">
+				<div class="relative grow py-[10px]">
 					<el-button class="aspect-square float-right w-[40px] hover:text-aniPrimary focus:bg-aniWhite" size="large" color="#fafafa" @click="isOpen = !isOpen">
 						<font-awesome-icon icon="fas fa-sliders-h" :class="[isOpen ? 'text-aniPrimary' : 'text-[#afbfd1]']" class="stroke-2 hover:text-aniPrimary focus:text-aniPrimary" />
 					</el-button>
@@ -42,9 +42,9 @@
 			<AniTags />
 			<div v-if="isLoaded && tierStore.getAllEntries.length > 0" id="tierList">
 				<div class="overflow-hidden rounded-[6px]">
-					<Tier v-for="tier in tierStore.tiers" :key="tier.name" :name="tier.name" :color="tier.color" :entries="tier.entries"/>
+					<Tier v-for="(tier, index) in tiers" :key="tier.name" :position="index"/>
 				</div>
-				<Tier class="mt-8" :entries="tierStore.unrankedTier"/>
+				<UnrankedTier class="mt-8" :list="unrankedTier"/>
 			</div>
 			<AniLoader v-else-if="!isLoaded" />
 			<el-empty v-else description="No anime found, please check the username" />
@@ -74,6 +74,9 @@ const filterStore = useFilterStore();
 definePageMeta({
   middleware: "auth"
 })
+
+const unrankedTier = ref(tierStore.unrankedTier);
+const tiers = ref(tierStore.tiers);
 
 // Init datas
 onMounted(() => {

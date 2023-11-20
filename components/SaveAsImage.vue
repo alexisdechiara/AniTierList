@@ -1,12 +1,9 @@
 <template>
-	<el-button class="fixed bottom-8 right-8" type="primary" size="large" circle @click="saveAsPng">
-		<font-awesome-icon icon="fas fa-download" />
-	</el-button>
+	<el-button class="fixed bottom-8 right-8" type="primary" size="large" circle :icon="ElIconDownload" @click="saveAsPng" />
 </template>
 
 <script setup>
 import { ElButton } from "element-plus";
-import { Download } from "@element-plus/icons-vue";
 import html2canvas from "html2canvas";
 
 function saveAsPng() {

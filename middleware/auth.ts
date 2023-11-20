@@ -10,8 +10,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
 		console.log("User completed new entries : " + userStore.getUser.lastCompletedAt);
 		const completedDate: Date = new Date(userStore.getUser.lastCompletedAt);
 		const formattedDate: number = Number(completedDate.toISOString().slice(0, 10).replace(/-/g, ""));
-		console.log("Date : " + formattedDate);
-
 		const result = await tierStore.fetchEntriesByCompletedDate(to.params.username as string, formattedDate);
 		const entries: Array<any> = result || new Array();
 

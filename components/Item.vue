@@ -27,6 +27,7 @@
 							</div>
 						</div>
 						<el-scrollbar max-height="144px">
+							<!-- eslint-disable-next-line vue/no-v-html -->
 							<p class="text-[11px] font-medium leading-4 text-[#6E859E]" v-html="content.media.description"></p>
 						</el-scrollbar>
 						<div class="flex justify-center gap-x-2">

@@ -19,7 +19,7 @@
 					<span class="flex w-full items-center gap-2 font-semibold text-[#8BA0B2] hover:text-[#7a8c9c]" @click="openDialog()"><font-awesome-icon icon="fa-solid fa-cog"></font-awesome-icon>Settings</span>
 				</div>
 				<div class="py-4 px-7 bg-[#edf1f5] text-xs grid grid-cols-2 gap-2">
-					<span class="flex w-full items-center gap-1 font-semibold text-[#8BA0B2] hover:text-[#657481] justify-center" @click="reset($route.fullPath)"><font-awesome-icon icon="fa-solid fa-sync-alt"></font-awesome-icon>Refresh</span>
+					<span class="flex w-full items-center gap-1 font-semibold text-[#8BA0B2] hover:text-[#657481] justify-center" @click="reset($route.fullPath)"><font-awesome-icon icon="fa-solid fa-sync-alt"></font-awesome-icon>Reset</span>
 					<NuxtLink class="flex w-full items-center gap-1 font-semibold text-[#8BA0B2] hover:text-[#657481] justify-center" to="/" @click="userStore.$reset()"><font-awesome-icon icon="fa-solid fa-sign-out-alt"></font-awesome-icon>Logout</NuxtLink>
 				</div>
 			</div>
