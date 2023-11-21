@@ -6,24 +6,27 @@
 			</NuxtLink>
 		</div>
 
-		<el-popover v-if="userStore.getUser.isLogged" placement="bottom" :width="200" trigger="hover" popper-style="border-radius:6px;padding:0">
-			<template #reference>
-				<div class="flex items-center w-fit ring-0 outline-none cursor-pointer">
-					<NuxtImg class="h-[50px]" :src="userStore.getUser.avatar.medium || `https://ui-avatars.com/api/?name=${userStore.getUser.username}`" />
-					<font-awesome-icon class="ml-2 text-aniWhite h-3 w-3" icon="fa-solid fa-chevron-down"/>
+		<div v-if="userStore.getUser.isLogged" class="flex items-center gap-x-4">
+			<AniSearch />
+			<el-popover placement="bottom" :width="200" trigger="hover" popper-style="border-radius:6px;padding:0">
+				<template #reference>
+					<div class="flex items-center outline-none cursor-pointer w-fit ring-0">
+						<NuxtImg class="h-[38px]" :src="userStore.getUser.avatar.medium || `https://ui-avatars.com/api/?name=${userStore.getUser.username}`" />
+						<font-awesome-icon class="w-3 h-3 ml-2 text-aniWhite" icon="fa-solid fa-chevron-down"/>
+					</div>
+				</template>
+				<div class="cursor-pointer">
+					<div class="flex flex-col gap-4 py-5 text-sm px-7">
+						<NuxtLink class="flex w-full items-center gap-2 font-semibold text-[#8BA0B2] hover:text-[#7a8c9c]" :to="userStore.getUser.url" target="_blank"><font-awesome-icon icon="fa-solid fa-user"></font-awesome-icon>Profile</NuxtLink>
+						<span class="flex w-full items-center gap-2 font-semibold text-[#8BA0B2] hover:text-[#7a8c9c]" @click="openDialog()"><font-awesome-icon icon="fa-solid fa-cog"></font-awesome-icon>Settings</span>
+					</div>
+					<div class="py-4 px-7 bg-[#edf1f5] text-xs grid grid-cols-2 gap-2">
+						<span class="flex w-full items-center gap-1 font-semibold text-[#8BA0B2] hover:text-[#657481] justify-center" @click="reset($route.fullPath)"><font-awesome-icon icon="fa-solid fa-sync-alt"></font-awesome-icon>Reset</span>
+						<NuxtLink class="flex w-full items-center gap-1 font-semibold text-[#8BA0B2] hover:text-[#657481] justify-center" to="/" @click="userStore.$reset()"><font-awesome-icon icon="fa-solid fa-sign-out-alt"></font-awesome-icon>Logout</NuxtLink>
+					</div>
 				</div>
-			</template>
-			<div class="cursor-pointer">
-				<div class="flex flex-col gap-4 px-7 py-5 text-sm">
-					<NuxtLink class="flex w-full items-center gap-2 font-semibold text-[#8BA0B2] hover:text-[#7a8c9c]" :to="userStore.getUser.url" target="_blank"><font-awesome-icon icon="fa-solid fa-user"></font-awesome-icon>Profile</NuxtLink>
-					<span class="flex w-full items-center gap-2 font-semibold text-[#8BA0B2] hover:text-[#7a8c9c]" @click="openDialog()"><font-awesome-icon icon="fa-solid fa-cog"></font-awesome-icon>Settings</span>
-				</div>
-				<div class="py-4 px-7 bg-[#edf1f5] text-xs grid grid-cols-2 gap-2">
-					<span class="flex w-full items-center gap-1 font-semibold text-[#8BA0B2] hover:text-[#657481] justify-center" @click="reset($route.fullPath)"><font-awesome-icon icon="fa-solid fa-sync-alt"></font-awesome-icon>Reset</span>
-					<NuxtLink class="flex w-full items-center gap-1 font-semibold text-[#8BA0B2] hover:text-[#657481] justify-center" to="/" @click="userStore.$reset()"><font-awesome-icon icon="fa-solid fa-sign-out-alt"></font-awesome-icon>Logout</NuxtLink>
-				</div>
-			</div>
-		</el-popover>
+			</el-popover>
+		</div>
 	</div>
 
 	<el-dialog v-model="isOpen" title="Settings">

@@ -32,9 +32,10 @@
 						</el-scrollbar>
 						<div class="flex justify-center gap-x-2">
 							<div class="grid grid-cols-2 my-2 gap-x-6 gap-y-4">
-								<Stat title="Your score" :value="content.score + ' / 10'">
+								<Stat title="Your score" :value="content.score ? content.score + ' / 10' : '-'">
 									<template #icon>
-										<font-awesome-icon v-if="content.score >= 8" icon="far fa-smile" class="text-3xl text-aniGreen" />
+										<font-awesome-icon v-if="content.score == null" icon="far fa-grin-beam-sweat" class="text-3xl text-aniGray" />
+										<font-awesome-icon v-else-if="content.score >= 8" icon="far fa-smile" class="text-3xl text-aniGreen" />
 										<font-awesome-icon v-else-if="content.score < 8 && content.score >= 6" icon="far fa-meh" class="text-3xl text-aniOrange" />
 										<font-awesome-icon v-else icon="far fa-frown" class="text-3xl text-aniRed" />
 									</template>

@@ -75,7 +75,9 @@
 	}
 
 	function checkScore(score) {
-		return filterStore.getMinimumRange <= score && score <= filterStore.getMaximumRange;
+		if (score) {
+			return filterStore.getMinimumRange <= score && score <= filterStore.getMaximumRange;
+		} else return true;
 	}
 </script>
 
