@@ -15,7 +15,7 @@ defineProps({
 	linkedTo: {
 		type: String,
 		required: false,
-		default: '',
+		default: "",
 	},
 });
 </script>

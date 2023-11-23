@@ -33,9 +33,6 @@
 	"[typescript]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
-	"[vue]": {
-		"editor.defaultFormatter": "Vue.volar"
-	},
 	"[graphql]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	}

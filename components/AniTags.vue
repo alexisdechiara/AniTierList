@@ -1,5 +1,5 @@
 <template>
-	<div v-if="filterStore.getSearch || filterStore.getYears.length > 0 || filterStore.getSeasons.length > 0 || filterStore.getFormats.length > 0 || filterStore.getGenres.length > 0" class="flex flex-row items-center mb-8">
+	<div v-if="filterStore.getSearch || filterStore.getYears.length > 0 || filterStore.getSeasons.length > 0 || filterStore.getFormats.length > 0 || filterStore.getGenres.length > 0" class="mb-8 flex flex-row items-center">
 		<font-awesome-icon icon="fas fa-tags" class="mr-[16px] h-[20px] w-[20px] text-[#afbfd1]" />
 		<div class="flex flex-row flex-wrap space-x-4">
 			<el-tag v-if="filterStore.search != ''" closable effect="dark" @close="filterStore.search = ''">{{ filterStore.search }}</el-tag>

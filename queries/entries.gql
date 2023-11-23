@@ -1,8 +1,8 @@
-query entries($username: String, $completedAt: FuzzyDateInt = 10000000) {
+query entries($username: String, $completedAt: FuzzyDateInt = 10000000, $scoreFormat: ScoreFormat = POINT_10_DECIMAL) {
 	MediaListCollection(userName: $username, type: ANIME, status: COMPLETED, completedAt_greater: $completedAt) {
 		lists {
 			entries {
-				score(format: POINT_10_DECIMAL)
+				score(format: $scoreFormat)
 				media {
 					id
 					title {
@@ -82,11 +82,12 @@ query entries($username: String, $completedAt: FuzzyDateInt = 10000000) {
 					status
 					siteUrl
 				}
+				updatedAt
 				completedAt {
-          year
-          month
-          day
-        }
+					year
+					month
+					day
+				}
 			}
 		}
 	}

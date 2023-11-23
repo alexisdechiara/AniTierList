@@ -1,9 +1,9 @@
 <template>
 	<div class="relative group">
 		<NuxtImg loading="lazy" class="aspect-[2/3] z-0 flex h-full object-cover p-0" :src="content.media.coverImage.medium" width="100" height="150" :placeholder="[50, 75, 75, 5]" />
-		<el-popover placement="right" trigger="click" popper-style="padding:0;width:max-content;">
+		<el-popover :visible="visible" ref="target" placement="right" popper-style="padding:0;width:max-content;">
 			<template #reference>
-				<font-awesome-icon class="absolute z-50 invisible p-1 rounded-full cursor-pointer bottom-2 right-2 text-aniWhite hover:bg-aniWhite hover:text-aniGray group-hover:visible" icon="fa-solid fa-ellipsis-h" />
+				<font-awesome-icon class="absolute z-50 invisible p-1 rounded-full cursor-pointer bottom-2 right-2 text-aniWhite hover:bg-aniWhite hover:text-aniGray group-hover:visible" icon="fa-solid fa-ellipsis-h" @click="visible = true"/>
 			</template>
 			<div class="z-50 flex h-max w-[275px] justify-between overflow-hidden rounded-[3px] bg-aniWhite">
 				<div class="flex flex-col w-full h-full bg-aniWhite">
@@ -32,11 +32,11 @@
 						</el-scrollbar>
 						<div class="flex justify-center gap-x-2">
 							<div class="grid grid-cols-2 my-2 gap-x-6 gap-y-4">
-								<Stat title="Your score" :value="content.score ? content.score + ' / 10' : '-'">
+								<Stat title="Your score" :value="content.score ? userStore.getScoreFormat == 'POINT_10_DECIMAL' ? content.score : Math.trunc(content.score) + ' /' + getMaximumScoreFormat  : '-'">
 									<template #icon>
-										<font-awesome-icon v-if="content.score == null" icon="far fa-grin-beam-sweat" class="text-3xl text-aniGray" />
-										<font-awesome-icon v-else-if="content.score >= 8" icon="far fa-smile" class="text-3xl text-aniGreen" />
-										<font-awesome-icon v-else-if="content.score < 8 && content.score >= 6" icon="far fa-meh" class="text-3xl text-aniOrange" />
+										<font-awesome-icon v-if="Math.trunc(content.score) == null" icon="far fa-grin-beam-sweat" class="text-3xl text-aniGray" />
+										<font-awesome-icon v-else-if="Math.trunc(content.score) >= Math.trunc(getMaximumScoreFormat*0.8) " icon="far fa-smile" class="text-3xl text-aniGreen" />
+										<font-awesome-icon v-else-if="Math.trunc(content.score) < Math.trunc(getMaximumScoreFormat*0.8) && Math.trunc(content.score) >= Math.trunc(getMaximumScoreFormat*0.6)" icon="far fa-meh" class="text-3xl text-aniOrange" />
 										<font-awesome-icon v-else icon="far fa-frown" class="text-3xl text-aniRed" />
 									</template>
 								</Stat>
@@ -79,10 +79,10 @@
 					</div>
 					<div class="grid h-[44px] w-full grid-cols-3 items-center bg-[#EFF7FB] px-4">
 						<div class="flex flex-wrap items-center h-5 col-span-2 overflow-hidden grow gap-x-2">
-							<span v-for="genre in content.media.genres" :key="content.media.title.english + '-' + genre " class="flex items-center h-full px-3 text-xs font-bold leading-none text-center align-middle rounded-full bg-aniPrimary text-aniWhite">{{ genre }}</span>
+							<span v-for="genre in content.media.genres" :key="content.media.title.english + '-' + genre" class="flex items-center h-full px-3 text-xs font-bold leading-none text-center align-middle rounded-full bg-aniPrimary text-aniWhite">{{ genre }}</span>
 						</div>
 						<div class="flex justify-end col-span-1">
-							<el-button type="danger" circle size="small" color="#E85D75" class="group" plain @click="$emit('deleted')">
+							<el-button type="danger" circle size="small" color="#E85D75" class="group" plain @click="$emit('deleted');visible = false">
 								<font-awesome-icon icon="fas fa-trash" class="text-[10px] text-aniRed group-hover:text-aniWhite group-focus:text-aniWhite" />
 							</el-button>
 						</div>
@@ -95,14 +95,19 @@
 
 <script lang="ts" setup>
 import type { NuxtImg } from "nuxt/dist/app/components/nuxt-stubs";
+import { onClickOutside } from '@vueuse/core'
 
 const userStore = useUserStore();
+const visible = ref(false);
+const target = ref(null)
+
+onClickOutside(target, () => visible.value = false)
 
 defineProps<{
 	content: any;
 }>();
 
-defineEmits(['deleted']);
+defineEmits(["deleted"]);
 
 const isVideoOpened = ref(false);
 
@@ -131,6 +136,22 @@ const getFormattedTime = (totalMinutes: number) => {
 	const minutes = totalMinutes % 60;
 	return `${hours} hour${hours > 1 ? "s" : ""} ${minutes} minute${minutes > 1 ? "s" : ""}`;
 };
+
+// get scoreFormat from userStore and return the /number
+const getMaximumScoreFormat = computed(() => {
+	switch (userStore.getScoreFormat) {
+		case "POINT_100":
+			return 100;
+		case "POINT_10_DECIMAL" || "POINT_10":
+			return 10;
+		case "POINT_5":
+			return 5;
+		case "POINT_3":
+			return 3;
+		default:
+			return 100;
+	}
+});
 </script>
 
 <style>

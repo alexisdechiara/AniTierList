@@ -3,7 +3,6 @@
 </template>
 
 <script lang="ts" setup>
-
 const props = defineProps({
 	modelValue: {
 		type: String,
@@ -12,15 +11,7 @@ const props = defineProps({
 });
 
 const color = ref(props.modelValue);
-const predefineColors = ref([
-	"#57b1ef",
-	"#c063ff",
-	"#4cca51",
-	"#ef881a",
-	"#e13333",
-	"#fc9dd6",
-	"#677b94",
-]);
+const predefineColors = ref(["#57b1ef", "#c063ff", "#4cca51", "#ef881a", "#e13333", "#fc9dd6", "#677b94"]);
 
 watch(
 	() => props.modelValue,
@@ -36,5 +27,4 @@ const emit = defineEmits(["update:modelValue"]);
 const changeColor = () => {
 	emit("update:modelValue", color);
 };
-
 </script>

@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="my-16">
 		<span>{{ getRandomKaomoji }}</span>
 	</div>
 </template>

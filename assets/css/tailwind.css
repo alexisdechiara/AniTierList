@@ -1,5 +1,4 @@
-@import url("https://overpass-30e2.kxcdn.com/overpass.css");
-
+@import "font.css";
 @import "button.css";
 @import "dialog.css";
 @import "input.css";

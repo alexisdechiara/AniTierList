@@ -17,7 +17,7 @@ const props = defineProps({
 	color: {
 		type: String,
 		default: null,
-	}
+	},
 });
 
 const padding = ref(true);

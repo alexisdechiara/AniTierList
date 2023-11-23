@@ -1,10 +1,11 @@
+import { ScoreFormat } from "#gql/default";
 export default defineNuxtRouteMiddleware(async (to) => {
 	const userStore = useUserStore();
 	const filterStore = useFilterStore();
 	const tierStore = useTierStore();
 
-	if (to.query.min != null && Number(to.query.min) != 0 && Number(to.query.min) <= 10) filterStore.setMinimumRange(Number(to.query.min));
-	if (to.query.max != null && Number(to.query.max) != 10 && Number(to.query.max) >= 0) filterStore.setMaximumRange(Number(to.query.max));
+	if (to.query.min != null) filterStore.setMinimumRange(Number(to.query.min));
+	if (to.query.max != null) filterStore.setMaximumRange(Number(to.query.max));
 
 	if (userStore.getUser.isLogged && to.params.username === userStore.getUsername) {
 		console.log("User completed new entries : " + userStore.getUser.lastCompletedAt);
@@ -27,7 +28,9 @@ export default defineNuxtRouteMiddleware(async (to) => {
 			navigateTo("/");
 		});
 
-		await tierStore.fetchAllEntries(to.params.username as string, to.query.franchise != null && to.query.franchise == "true").catch((e) => {
+		if (to.query.scoring != null) userStore.setScoreFormat(to.query.scoring as ScoreFormat);
+
+		await tierStore.fetchAllEntries(to.params.username as string, userStore.getScoreFormat ? userStore.getScoreFormat : ScoreFormat.POINT_10_DECIMAL, to.query.franchise != null && to.query.franchise == "true").catch((e) => {
 			console.log("Error : " + e);
 		});
 		tierStore.changeTiersTemplate(tierStore.templates[tierStore.currentTemplate]);

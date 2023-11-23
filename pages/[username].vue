@@ -40,14 +40,13 @@
 				</div>
 			</div>
 			<AniTags />
-			<div v-if="isLoaded && tierStore.getAllEntries.length > 0" id="tierList">
+			<div v-if="isLoaded" id="tierList">
 				<div class="overflow-hidden rounded-[6px]">
-					<Tier v-for="(tier, index) in tiers" :key="tier.name" :position="index"/>
+					<Tier v-for="(tier, index) in tiers" :key="tier.name" :position="index" />
 				</div>
-				<UnrankedTier class="mt-8" :list="unrankedTier"/>
 			</div>
 			<AniLoader v-else-if="!isLoaded" />
-			<el-empty v-else description="No anime found, please check the username" />
+			<UnrankedTier class="mt-8" :list="unrankedTier" />
 		</div>
 		<SaveAsImage v-if="true" @click="downloadDialogVisible = true" />
 		<el-dialog v-model="downloadDialogVisible" destroy-on-close title="Right click > Save image as" fullscreen>
@@ -60,9 +59,9 @@
 import data from "../content/data.json";
 
 const downloadDialogVisible = ref(false);
-const years= ref([])
-const seasons= ref(data.seasons)
-const genres = ref([])
+const years = ref([]);
+const seasons = ref(data.seasons);
+const genres = ref([]);
 const formats = ref(data.formats);
 const isLoaded = ref(false);
 const isOpen = ref(false);
@@ -72,8 +71,8 @@ const tierStore = useTierStore();
 const filterStore = useFilterStore();
 
 definePageMeta({
-  middleware: "auth"
-})
+	middleware: "auth",
+});
 
 const unrankedTier = ref(tierStore.unrankedTier);
 const tiers = ref(tierStore.tiers);

@@ -1,3 +1,5 @@
+import { ScoreFormat } from "#gql/default";
+import { useUserStore } from "./user";
 import { defineStore } from "pinia";
 import templatesJSON from "../content/templates.json";
 
@@ -22,6 +24,37 @@ export const useTierStore = defineStore({
 		setAutoRank(value: boolean) {
 			this.autoRank = value;
 		},
+		sortUnrankedTierEntries() {
+			const userStore = useUserStore();
+			switch (userStore.rowOrder) {
+				case "Score":
+					this.sortUnrankedTierEntriesByScore();
+					break;
+				case "Title":
+					this.sortUnrankedTierEntriesByTitle();
+					break;
+				case "Last Updated":
+					this.sortUnrakedTierEntriesByUpdatedDate();
+					break;
+				case "Last Added":
+					this.sortUnrakedTierEntriesByCompletedDate();
+					break;
+			}
+		},
+		sortUnrankedTierEntriesByScore() {
+			this.unrankedTier.sort((a: any, b: any) => b.score - a.score);
+		},
+		sortUnrankedTierEntriesByTitle() {
+			const userStore = useUserStore();
+			this.unrankedTier.sort((a: any, b: any) => a.media.title[userStore.getTitleLanguage.toLowerCase()].localeCompare(b.media.title[userStore.getTitleLanguage.toLowerCase()]));
+		},
+		sortUnrakedTierEntriesByUpdatedDate() {
+			//To fix - new Date(b.updatedAt) - new Date(a.updatedAt) doesn't work
+			this.unrankedTier.sort((a: any, b: any) => new Date(b.updatedAt) - new Date(a.updatedAt));
+		},
+		sortUnrakedTierEntriesByCompletedDate() {
+			this.unrankedTier.sort((a: any, b: any) => new Date(b.completedAt.year, b.completedAt.month, b.completedAt.day) - new Date(a.completedAt.year, a.completedAt.month, a.completedAt.day));
+		},
 		findLatestCompletedEntry(entries: Array<any>): any {
 			return entries.reduce((latestEntry, currentEntry) => {
 				if (currentEntry.completedAt && (!latestEntry.completedAt || new Date(currentEntry.completedAt.year, currentEntry.completedAt.month, currentEntry.completedAt.day) > new Date(latestEntry.completedAt.year, latestEntry.completedAt.month, latestEntry.completedAt.day))) {
@@ -41,12 +74,14 @@ export const useTierStore = defineStore({
 				return [];
 			}
 		},
-		async fetchAllEntries(username: string, onlyFranchise: boolean = false) {
+		async fetchAllEntries(username: string, ScoreFormat: ScoreFormat, onlyFranchise: boolean = false) {
 			const { data } = await useAsyncGql({
 				operation: "entries",
-				variables: { username: username },
+				variables: { username: username, ScoreFormat: ScoreFormat },
 			});
+			console.log(ScoreFormat);
 			const filterStore = useFilterStore();
+			console.log(data.value.MediaListCollection.lists[0].entries);
 			if (onlyFranchise == false) {
 				if (data.value.MediaListCollection && data.value.MediaListCollection?.lists) {
 					this.unrankedTier = data.value.MediaListCollection.lists[0].entries.filter((entry: any) => entry.score >= filterStore.getMinimumRange && entry.score <= filterStore.getMaximumRange);
@@ -71,6 +106,17 @@ export const useTierStore = defineStore({
 
 			const userStore = useUserStore();
 			if (data.value.MediaListCollection && data.value.MediaListCollection?.lists) userStore.setLastCompletedAt(this.findLatestCompletedEntry(data.value.MediaListCollection.lists[0].entries));
+		},
+		changeEntriesScoreRange(oldRange: Array<number>, newRange: Array<number>) {
+			this.tiers.forEach((tier: Tier) => {
+				tier.entries.forEach((entry: any) => {
+					entry.score = ((entry.score - oldRange[0]) * (newRange[1] - newRange[0])) / (oldRange[1] - oldRange[0]) + newRange[0];
+				});
+			});
+
+			this.unrankedTier.forEach((entry: any) => {
+				entry.score = ((entry.score - oldRange[0]) * (newRange[1] - newRange[0])) / (oldRange[1] - oldRange[0]) + newRange[0];
+			});
 		},
 		setUnrankedTierEntries(entries: Array<any>) {
 			this.unrankedTier = entries;

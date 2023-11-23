@@ -11,27 +11,26 @@
 </template>
 
 <script setup lang="ts">
-
 const props = defineProps({
-  label: {
+	label: {
 		type: String,
 		required: true,
 	},
-  modelValue: {
+	modelValue: {
 		type: String,
 		required: true,
 	},
-  disabled: {
+	disabled: {
 		type: Boolean,
 		required: false,
 		default: false,
 	},
-  search: {
+	search: {
 		type: Boolean,
 		required: false,
 		default: false,
 	},
-  clearable: {
+	clearable: {
 		type: Boolean,
 		required: false,
 		default: false,
@@ -43,11 +42,13 @@ const emits = defineEmits(["update:modelValue"]);
 const value = ref(props.modelValue);
 
 function updateValue() {
-  emits('update:modelValue', value.value);
-};
+	emits("update:modelValue", value.value);
+}
 
-watch(() => props.modelValue, (newValue) => {
-  value.value = newValue;
-});
-
+watch(
+	() => props.modelValue,
+	(newValue) => {
+		value.value = newValue;
+	},
+);
 </script>

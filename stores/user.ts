@@ -19,6 +19,7 @@ export const useUserStore = defineStore({
 		rowOrder: "" as string,
 		isLogged: false as boolean,
 		lastCompletedAt: Date.now() as number,
+		displayTransition: true as boolean,
 	}),
 	actions: {
 		async fetchUserData(username: string) {
@@ -36,17 +37,22 @@ export const useUserStore = defineStore({
 				this.displayAdultContent = user.options.displayAdultContent;
 				this.profileColor = user.options.profileColor;
 				this.scoreFormat = user.mediaListOptions.scoreFormat;
+				this.rowOrder = user.mediaListOptions.rowOrder;
 				this.isLogged = true;
 			} else throw Error("User not found");
 		},
 		setLastCompletedAt(value: number) {
 			this.lastCompletedAt = value;
 		},
+		setScoreFormat(value: ScoreFormat) {
+			this.scoreFormat = value;
+		},
 	},
 	getters: {
 		getUser: (state) => state,
 		getUsername: (state) => state.username,
 		getTitleLanguage: (state) => state.titleLanguage,
+		getScoreFormat: (state) => state.scoreFormat,
 	},
 	persist: {
 		storage: persistedState.localStorage,
