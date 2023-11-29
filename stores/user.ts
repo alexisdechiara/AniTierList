@@ -15,7 +15,7 @@ export const useUserStore = defineStore({
 		titleLanguage: "" as UserTitleLanguage,
 		displayAdultContent: false as boolean,
 		profileColor: "" as string,
-		scoreFormat: ScoreFormat.POINT_10_DECIMAL as ScoreFormat,
+		scoreFormat: "DEFAULT" as ScoreFormat | string,
 		rowOrder: "" as string,
 		isLogged: false as boolean,
 		lastCompletedAt: Date.now() as number,
@@ -32,19 +32,21 @@ export const useUserStore = defineStore({
 				this.id = user.id;
 				this.username = username;
 				this.avatar = user.avatar;
-				this.url = user.siteUrl;
-				this.titleLanguage = user.options.titleLanguage;
-				this.displayAdultContent = user.options.displayAdultContent;
-				this.profileColor = user.options.profileColor;
-				this.scoreFormat = user.mediaListOptions.scoreFormat;
-				this.rowOrder = user.mediaListOptions.rowOrder;
+				this.url = user.siteUrl || "";
+				this.titleLanguage = user.options?.titleLanguage || UserTitleLanguage.ENGLISH;
+				this.displayAdultContent = user.options?.displayAdultContent || false;
+				this.profileColor = user.options?.profileColor || "blue";
+				if (this.scoreFormat == "DEFAULT") {
+					this.scoreFormat = user.mediaListOptions?.scoreFormat || ScoreFormat.POINT_10_DECIMAL;
+				}
+				this.rowOrder = user.mediaListOptions?.rowOrder || "UPDATED_AT";
 				this.isLogged = true;
 			} else throw Error("User not found");
 		},
 		setLastCompletedAt(value: number) {
 			this.lastCompletedAt = value;
 		},
-		setScoreFormat(value: ScoreFormat) {
+		setScoreFormat(value: ScoreFormat | string) {
 			this.scoreFormat = value;
 		},
 	},
@@ -52,7 +54,7 @@ export const useUserStore = defineStore({
 		getUser: (state) => state,
 		getUsername: (state) => state.username,
 		getTitleLanguage: (state) => state.titleLanguage,
-		getScoreFormat: (state) => state.scoreFormat,
+		getScoreFormat: (state) => state.scoreFormat.toString(),
 	},
 	persist: {
 		storage: persistedState.localStorage,

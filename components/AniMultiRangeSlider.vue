@@ -64,7 +64,6 @@ function createMarks(): Marks {
 		Array.from(Array(props.max+1).keys()).forEach(element => {
 			res[element] = element.toString();
 		});
-		console.log(res);
 		return res;
 	} else {
 		return {

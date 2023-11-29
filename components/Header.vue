@@ -2,15 +2,15 @@
 	<div class="flex h-[68px] w-full justify-center bg-[#2b2d42]">
 		<div class="flex items-center justify-between w-full max-w-5xl">
 			<NuxtLink to="/">
-				<NuxtImg class="h-[50px]" src="img/logo.svg" loading="lazy" :placeholder="[25, 25]" alt="AniTierList icon" />
+				<NuxtImg class="h-[50px]" src="/img/logo.svg" loading="lazy" :placeholder="[25, 25]" alt="AniTierList icon" />
 			</NuxtLink>
 
-			<div v-show="route.params.username" class="flex items-center gap-x-6" >
+			<div v-if="route.params.username" class="flex items-center gap-x-6" >
 					<AniSearch />
 					<el-popover v-if="userStore.getUser.isLogged" placement="bottom" :width="200" trigger="hover" popper-style="border-radius:6px;padding:0">
 						<template #reference>
 							<div class="flex items-center outline-none cursor-pointer w-fit ring-0 gap-x-0.5">
-								<NuxtImg class="h-[38px]" :src="userStore.getUser.avatar.medium || `https://ui-avatars.com/api/?name=${userStore.getUser.username}`" />
+								<NuxtImg class="h-[38px]" :src="userStore.getUser.avatar?.medium || `https://ui-avatars.com/api/?name=${userStore.getUser.username}`" />
 								<font-awesome-icon class="ml-2 text-[rgba(191,193,212,.65)] hover:text-[#bcbedc] transition-colors duration-300 cursor-pointer" size="xs" icon="fa-solid fa-chevron-down" />
 							</div>
 						</template>
@@ -34,6 +34,7 @@
 const userStore = useUserStore();
 const tierStore = useTierStore();
 const filterStore = useFilterStore();
+const pageStore = usePageStore();
 
 const route = useRoute();
 
@@ -41,7 +42,7 @@ function reset(path: string) {
 	userStore.$reset();
 	tierStore.$reset();
 	filterStore.$reset();
-	ElLoading.service({ lock: true, text: "Please wait for reloading" });
+	pageStore.setIsLoading(true);
 	reloadNuxtApp({
 		path: path,
 		ttl: 1000,

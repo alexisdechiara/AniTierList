@@ -1,28 +1,35 @@
-import { ScoreFormat } from "#gql/default";
 import { useUserStore } from "./user";
 import { defineStore } from "pinia";
 import templatesJSON from "../content/templates.json";
+import { ScoreFormat } from "#gql/default";
 
 export const useTierStore = defineStore({
 	id: "Tiers",
 	state: () => ({
 		tiers: [] as Array<Tier>,
 		unrankedTier: [] as Array<any>,
-		autoRank: false as Boolean,
+		autoRank: false as boolean,
 		templates: templatesJSON as Array<Template>,
 		currentTemplate: 0 as number,
+		skipFetch: false as boolean,
 	}),
 	getters: {
-		isAutoRank(): Boolean {
+		isAutoRank(): boolean {
 			return this.autoRank;
 		},
-		getAllEntries(): Array<any> {
+		getAllEntries(): any[] {
 			return [...this.unrankedTier, ...this.tiers.flatMap((tier: Tier) => tier.entries)];
+		},
+		getSkipFetch(): boolean {
+			return this.skipFetch;
 		},
 	},
 	actions: {
 		setAutoRank(value: boolean) {
 			this.autoRank = value;
+		},
+		setSkipFetch(value: boolean) {
+			this.skipFetch = value;
 		},
 		sortUnrankedTierEntries() {
 			const userStore = useUserStore();
@@ -74,23 +81,22 @@ export const useTierStore = defineStore({
 				return [];
 			}
 		},
-		async fetchAllEntries(username: string, ScoreFormat: ScoreFormat, onlyFranchise: boolean = false) {
+		async fetchAllEntries(username: string) {
+			const userStore = useUserStore();
+			const filterStore = useFilterStore();
+			console.log("Fetching all entries...", ScoreFormat[userStore.getScoreFormat]);
 			const { data } = await useAsyncGql({
 				operation: "entries",
-				variables: { username: username, ScoreFormat: ScoreFormat },
+				variables: { username: username, ScoreFormat: ScoreFormat[userStore.getScoreFormat] },
 			});
-			console.log(ScoreFormat);
-			const filterStore = useFilterStore();
-			console.log(data.value.MediaListCollection.lists[0].entries);
-			if (onlyFranchise == false) {
-				if (data.value.MediaListCollection && data.value.MediaListCollection?.lists) {
-					this.unrankedTier = data.value.MediaListCollection.lists[0].entries.filter((entry: any) => entry.score >= filterStore.getMinimumRange && entry.score <= filterStore.getMaximumRange);
-				}
-			} else {
-				if (data.value.MediaListCollection && data.value.MediaListCollection?.lists) {
-					data.value.MediaListCollection.lists[0].entries
-						.filter((entry: any) => entry.score >= filterStore.getMinimumRange && entry.score <= filterStore.getMaximumRange)
-						.forEach((entry: any) => {
+			if (data.value.MediaListCollection != null) {
+				if (filterStore.getFranchise == false) {
+					if (data.value.MediaListCollection && data.value.MediaListCollection?.lists) {
+						this.unrankedTier = data.value.MediaListCollection.lists[0].entries.filter((entry: any) => entry.score >= filterStore.getMinimumRange && entry.score <= filterStore.getMaximumRange);
+					}
+				} else {
+					if (data.value.MediaListCollection && data.value.MediaListCollection?.lists) {
+						data.value.MediaListCollection.lists[0].entries.forEach((entry: any) => {
 							const filteredEntry = entry;
 							filteredEntry.media.relations.edges = entry.media.relations.edges.filter((edge: any) => edge.relationType === "SEQUEL" || edge.relationType === "PREQUEL" || edge.relationType === "SIDE_STORY" || edge.relationType === "SPIN_OFF");
 							if (!filteredEntry.media.relations.edges.some((edge: any) => new Date(edge.node.startDate.year, edge.node.startDate.month, edge.node.startDate.day).getTime() < new Date(entry.media.startDate.year, entry.media.startDate.month, entry.media.startDate.day).getTime())) {
@@ -101,11 +107,10 @@ export const useTierStore = defineStore({
 								console.error(entry.media.title.english + " - refusé : " + filteredEntry.media.relations.edges.length);
 							}
 						});
+					}
 				}
+				if (data.value.MediaListCollection && data.value.MediaListCollection?.lists) userStore.setLastCompletedAt(this.findLatestCompletedEntry(data.value.MediaListCollection.lists[0].entries));
 			}
-
-			const userStore = useUserStore();
-			if (data.value.MediaListCollection && data.value.MediaListCollection?.lists) userStore.setLastCompletedAt(this.findLatestCompletedEntry(data.value.MediaListCollection.lists[0].entries));
 		},
 		changeEntriesScoreRange(oldRange: Array<number>, newRange: Array<number>) {
 			this.tiers.forEach((tier: Tier) => {

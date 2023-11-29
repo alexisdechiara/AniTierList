@@ -7,7 +7,7 @@
 					<font-awesome-icon icon="fa-solid fa-search" />
 				</template>
 			</el-input>
-			<el-switch v-model="sequelRank" class="flex justify-center w-full" inactive-text="Rank anime" active-text="Rank seasons" />
+			<el-switch v-model="franchise" class="flex justify-center w-full" inactive-text="Rank seasons" active-text="Rank anime" />
 			<div class="mt-[15px] px-2">
 				<el-checkbox v-model="autoRank" label="Auto rank anime" />
 				<el-select v-model="scoreFormat" fit-input-width class="w-full ani-select-template">
@@ -21,10 +21,10 @@
 				<AniMultiRangeSlider v-model="range" :disabled="scoreFormat == 'DEFAULT'" class="mb-[15px] w-11/12 self-center" :min="getScoreRange[0]" :max="getScoreRange[1]" :step="getScoreRange[2]" />
 			</div>
 			<el-button type="primary" size="large" class="ani-button-search" :disabled="username == ''" @click="enterClicked()">Search</el-button>
-			<template v-if="userStore.getUsername">
+			<template v-if="userStore.isLogged">
 				<el-divider>OR CONTINUE</el-divider>
 				<div class="flex items-center w-full h-16 p-0 overflow-hidden transition-shadow border cursor-pointer gap-x-6 rounded-aniRounded hover:shadow-md" @click="continueClicked()">
-					<NuxtImg :src="userStore.getUser.avatar.medium" fit="cover" class="h-16 aspect-square" />
+					<NuxtImg :src="userStore.getUser.avatar?.medium || `https://ui-avatars.com/api/?name=${userStore.getUser.username}`" fit="cover" class="h-16 aspect-square" />
 					<div class="flex flex-col w-full">
 						<span class="font-bold text-aniGray">{{ userStore.getUsername }}</span>
 						<span v-if="tierStore.getAllEntries.length" class="font-normal text-aniGray">{{ tierStore.getAllEntries.length }} entries</span>
@@ -37,25 +37,24 @@
 
 <script setup lang="ts">
 // Data
-const autoRank = ref<boolean>(false);
-const range = ref<number[]>([0, 100]);
 const username = ref<string>("");
-const sequelRank = ref<boolean>(false);
+const autoRank = ref<boolean>(true);
+const range = ref<number[]>([0, 100]);
+const franchise = ref<boolean>(false);
 const scoreFormat = ref<string>("DEFAULT");
 
 // Store
 const userStore = useUserStore();
 const tierStore = useTierStore();
+const filterStore = useFilterStore();
 
 // Methods
 function enterClicked() {
-	const queries: any = {};
-	if (autoRank.value) queries["auto"] = true;
-	if (!sequelRank.value) queries["franchise"] = true;
-	if (range.value[0] != 0 && range.value[0] <= getScoreRange.value[1]) queries["min"] = range.value[0];
-	if (range.value[1] != getScoreRange.value[1] && range.value[1] >= 0) queries["max"] = range.value[1];
-	if(scoreFormat.value != "DEFAULT") queries["scoring"] = scoreFormat.value;
-	if (username.value != "") navigateTo({ path: username.value, query: queries });
+	filterStore.setFranchise(franchise.value);
+	filterStore.setRange(range.value);
+	userStore.setScoreFormat(scoreFormat.value);
+	tierStore.setAutoRank(autoRank.value);
+	if (username.value != "") navigateTo({ path: username.value });
 }
 
 function continueClicked() {
