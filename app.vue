@@ -1,12 +1,12 @@
 <template>
-	<aniLoader v-if="pageStore.getIsLoading" fullpage/>
-	<div v-else class="bg-aniBody" >
+	<aniLoader v-if="pageStore.getIsLoading" fullpage />
+	<div v-else class="bg-aniBody">
 		<Header />
-		<NuxtPage/>
+		<NuxtPage />
 		<Footer />
 	</div>
 </template>
 
 <script lang="ts" setup>
-const pageStore = usePageStore();
+const pageStore = usePageStore()
 </script>

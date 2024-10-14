@@ -3,7 +3,7 @@
 		<contenteditable v-model="tier.name" tag="div" :contenteditable="isEditable" :no-nl="true" :no-html="true" :style="'background-color:' + tier.color" class="break-word flex min-h-[150px] w-[200px] basis-auto items-center justify-center text-center text-3xl font-bold text-white focus:outline-none" @dblclick="isEditable = true" @focusout="isEditable = false" @returned="enterPressed()" />
 		<draggable
 			:list="tier.entries"
-			class="flex flex-row flex-wrap w-full"
+			class="flex w-full flex-row flex-wrap"
 			item-key="media.id"
 			group="tier"
 			:animation="userStore.displayTransition ? '150' : '0'"
@@ -25,23 +25,23 @@
 </template>
 
 <script setup>
-import draggable from "vuedraggable";
-import contenteditable from "vue-contenteditable";
+import draggable from "vuedraggable"
+import contenteditable from "vue-contenteditable"
 
 const props = defineProps({
 	position: {
 		type: Number,
 		required: true,
 	},
-});
+})
 
-const userStore = useUserStore();
-const tierStore = useTierStore();
-const tier = ref(tierStore.tiers[props.position]);
-const isEditable = ref(false);
+const userStore = useUserStore()
+const tierStore = useTierStore()
+const tier = ref(tierStore.tiers[props.position])
+const isEditable = ref(false)
 
 function removeAt(index) {
-	tier.value.entries.splice(index, 1);
+	tier.value.entries.splice(index, 1)
 }
 </script>
 

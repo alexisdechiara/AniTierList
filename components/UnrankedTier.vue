@@ -3,7 +3,7 @@
 		<draggable
 			v-if="unrankedTier.length > 0"
 			:list="unrankedTier"
-			class="flex flex-row flex-wrap w-full"
+			class="flex w-full flex-row flex-wrap"
 			item-key="media.id"
 			group="tier"
 			:animation="userStore.displayTransition ? '150' : '0'"
@@ -26,62 +26,68 @@
 </template>
 
 <script setup>
-import draggable from "vuedraggable";
-const tierStore = useTierStore();
-const filterStore = useFilterStore();
-const userStore = useUserStore();
-const { unrankedTier } = storeToRefs(tierStore);
+import draggable from "vuedraggable"
+
+const tierStore = useTierStore()
+const filterStore = useFilterStore()
+const userStore = useUserStore()
+const { unrankedTier } = storeToRefs(tierStore)
 
 function removeAt(index) {
-	unrankedTier.value.splice(index, 1);
+	unrankedTier.value.splice(index, 1)
 }
 
 function checkAll(element) {
-	return checkTitle(element.media.title) && checkYear(element.media.seasonYear) && checkSeason(element.media.season) && checkFormat(element.media.format) && checkGenre(element.media.genres) && checkScore(element.score);
+	return checkTitle(element.media.title) && checkYear(element.media.seasonYear) && checkSeason(element.media.season) && checkFormat(element.media.format) && checkGenre(element.media.genres) && checkScore(element.score)
 }
 function checkYear(year) {
 	if (filterStore.getYears.length > 0) {
-		return filterStore.getYears.includes(year);
-	} else return true;
+		return filterStore.getYears.includes(year)
+	}
+	else return true
 }
 
 function checkSeason(season) {
 	if (filterStore.getSeasons.length > 0) {
-		return filterStore.getSeasons.includes(season);
-	} else return true;
+		return filterStore.getSeasons.includes(season)
+	}
+	else return true
 }
 
 function checkFormat(format) {
 	if (filterStore.getFormats.length > 0) {
-		return filterStore.getFormats.includes(format);
-	} else return true;
+		return filterStore.getFormats.includes(format)
+	}
+	else return true
 }
 
 function checkGenre(genres) {
 	if (filterStore.getGenres.length > 0) {
-		return filterStore.getGenres.genres.every((e) => genres.includes(e));
-	} else return true;
+		return filterStore.getGenres.genres.every(e => genres.includes(e))
+	}
+	else return true
 }
 
 function checkTitle(title) {
 	if (filterStore.getSearch != "") {
-		let result = false;
+		let result = false
 		for (const key in title) {
 			if (title[key] != null) {
 				if (title[key].toLowerCase().includes(filterStore.getSearch.toLowerCase())) {
-					result = true;
+					result = true
 				}
 			}
 		}
-		return result;
-	} else return true;
+		return result
+	}
+	else return true
 }
 
 function checkScore(score) {
 	// if (score) {
 	// 	return filterStore.getMinimumRange <= score && score <= filterStore.getMaximumRange;
 	// } else return true;
-	return true;
+	return true
 }
 </script>
 

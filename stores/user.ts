@@ -1,6 +1,6 @@
-import type { AuthQuery } from "#gql";
-import { ScoreFormat, UserTitleLanguage } from "#gql/default";
-import { defineStore } from "pinia";
+import { defineStore } from "pinia"
+import type { AuthQuery } from "#gql"
+import { ScoreFormat, UserTitleLanguage } from "#gql/default"
 
 export const useUserStore = defineStore({
 	id: "User",
@@ -26,42 +26,46 @@ export const useUserStore = defineStore({
 			const { data } = await useAsyncGql({
 				operation: "auth",
 				variables: { username: username },
-			});
-			const user: AuthQuery["User"] = data.value.User;
+			})
+			const user: AuthQuery["User"] = data.value.User
 			if (user) {
-				this.id = user.id;
-				this.username = username;
-				this.avatar = user.avatar;
-				this.url = user.siteUrl || "";
-				this.titleLanguage = user.options?.titleLanguage || UserTitleLanguage.ENGLISH;
-				this.displayAdultContent = user.options?.displayAdultContent || false;
-				this.profileColor = user.options?.profileColor || "blue";
-				if (this.scoreFormat == "DEFAULT") {
-					this.scoreFormat = user.mediaListOptions?.scoreFormat || ScoreFormat.POINT_10_DECIMAL;
+				this.id = user.id
+				this.username = username
+				this.avatar = {
+					large: user.avatar?.large || "",
+					medium: user.avatar?.medium || "",
 				}
-				this.rowOrder = user.mediaListOptions?.rowOrder || "UPDATED_AT";
-				this.isLogged = true;
-			} else throw Error("User not found");
+				this.url = user.siteUrl || ""
+				this.titleLanguage = user.options?.titleLanguage || UserTitleLanguage.ENGLISH
+				this.displayAdultContent = user.options?.displayAdultContent || false
+				this.profileColor = user.options?.profileColor || "blue"
+				if (this.scoreFormat == "DEFAULT") {
+					this.scoreFormat = user.mediaListOptions?.scoreFormat || ScoreFormat.POINT_10_DECIMAL
+				}
+				this.rowOrder = user.mediaListOptions?.rowOrder || "UPDATED_AT"
+				this.isLogged = true
+			}
+			else throw Error("User not found")
 		},
 		setLastCompletedAt(value: number) {
-			this.lastCompletedAt = value;
+			this.lastCompletedAt = value
 		},
 		setScoreFormat(value: ScoreFormat | string) {
-			this.scoreFormat = value;
+			this.scoreFormat = value
 		},
 	},
 	getters: {
-		getUser: (state) => state,
-		getUsername: (state) => state.username,
-		getTitleLanguage: (state) => state.titleLanguage,
-		getScoreFormat: (state) => state.scoreFormat.toString(),
+		getUser: state => state,
+		getUsername: state => state.username,
+		getTitleLanguage: state => state.titleLanguage,
+		getScoreFormat: state => state.scoreFormat.toString(),
 	},
 	persist: {
 		storage: persistedState.localStorage,
 	},
-});
+})
 
 interface Avatar {
-	large: string;
-	medium: string;
+	large: string
+	medium: string
 }

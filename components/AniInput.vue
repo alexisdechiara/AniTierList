@@ -14,7 +14,7 @@
 const props = defineProps({
 	label: {
 		type: String,
-		required: true,
+		required: false,
 	},
 	modelValue: {
 		type: String,
@@ -35,20 +35,20 @@ const props = defineProps({
 		required: false,
 		default: false,
 	},
-});
+})
 
-const emits = defineEmits(["update:modelValue"]);
+const emits = defineEmits(["update:modelValue"])
 
-const value = ref(props.modelValue);
+const value = ref(props.modelValue)
 
 function updateValue() {
-	emits("update:modelValue", value.value);
+	emits("update:modelValue", value.value)
 }
 
 watch(
 	() => props.modelValue,
 	(newValue) => {
-		value.value = newValue;
+		value.value = newValue
 	},
-);
+)
 </script>

@@ -1,42 +1,30 @@
 {
-	"nuxt.isNuxtApp": false,
-	"files.associations": {
-		"*.css": "tailwindcss"
-	},
-	"editor.quickSuggestions": {
-		"strings": true
-	},
-	"typescript.tsdk": "node_modules\\typescript\\lib",
-
-	"nuxtr.snippets.nitro": true,
-	"nuxtr.vueFiles.firstTag": "template",
-	"nuxtr.vueFiles.script.type": "setup",
-	"nuxtr.vueFiles.script.defaultLanguage": "ts",
-	"nuxtr.vueFiles.style.addStyleTag": true,
-	"nuxtr.vueFiles.style.alwaysScoped": true,
-	"nuxtr.vueFiles.style.defaultLanguage": "css",
-	"nuxtr.openItemsAfterCreation": true,
-	"nuxtr.intellisense.nuxtrc": true,
-	"nuxtr.intellisense.vueFiles": true,
-	"nuxtr.intellisense.nuxtignore": true,
-	"nuxtr.snippets.nuxt": true,
-	"files.autoSave": "onFocusChange",
-	"editor.tabSize": 2,
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"prettier.arrowParens": "avoid",
-	"prettier.bracketSameLine": true,
-	"prettier.printWidth": 180,
-	"eslint.format.enable": true,
-	"prettier.useTabs": true,
-	"prettier.vueIndentScriptAndStyle": true,
-	"nuxtr.defaultPackageManager": "pnpm",
-	"[typescript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	},
-	"[graphql]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	},
-	"[javascript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
-	}
+  "eslint.useFlatConfig": true,
+	"editor.codeActionsOnSave":
+		{
+			"source.fixAll.eslint": "explicit"
+		},
+		"eslint.validate": [
+			"javascript",
+			"typescript"
+		],
+		"[vue]": {
+			"editor.defaultFormatter": "Vue.volar"
+		},
+		"[typescript]": {
+			"editor.defaultFormatter": "vscode.typescript-language-features"
+		},
+			"files.associations": {
+			"*.css": "tailwindcss"
+		},
+		"editor.quickSuggestions": {
+			"strings": true
+		},
+		"css.lint.unknownAtRules": "ignore",
+		"tailwindCSS.experimental.classRegex": [
+			"tw`(.*?)`",
+			"tw\\('(.*?)'\\)",
+			"tw\\(\\s*('(.*?)'|\"(.*?)\")\\s*\\)"
+		],
+		"eslint.format.enable": true,
 }

@@ -1,6 +1,6 @@
 <template>
 	<div class="flex w-full items-center gap-x-2 font-bold text-aniGray">
-		<slot name="icon"></slot>
+		<slot name="icon" />
 		<div class="flex grow flex-col justify-between">
 			<span class="text-[10px] font-black leading-normal">{{ title }}</span>
 			<span class="text-base leading-none">{{ value }}</span>
@@ -19,5 +19,5 @@ defineProps({
 		default: "-",
 		required: false,
 	},
-});
+})
 </script>

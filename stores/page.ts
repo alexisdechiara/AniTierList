@@ -5,12 +5,12 @@ export const usePageStore = defineStore({
 	}),
 	getters: {
 		getIsLoading(): boolean {
-			return this.isLoading;
+			return this.isLoading
 		},
 	},
 	actions: {
 		setIsLoading(value: boolean) {
-			this.isLoading = value;
+			this.isLoading = value
 		},
 	},
-});
+})

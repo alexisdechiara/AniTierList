@@ -1,31 +1,35 @@
 <template>
-	<div class="flex h-full min-h-screen w-full flex-col items-center justify-start bg-[#edf1f5]">
+	<div class="flex size-full min-h-screen flex-col items-center justify-start bg-aniBody">
 		<div class="mt-[60px] flex max-w-[400px] flex-col rounded-aniRounded bg-aniWhite p-[50px]">
-			<h1 class="mb-[30px] mt-[20px] text-center font-[Roboto] text-2xl font-semibold text-[#5f7189]">AniTierList (UNOFFICIAL)</h1>
+			<h1 class="mb-[30px] mt-[20px] text-center font-[Roboto] text-2xl font-semibold text-[#5f7189]">
+				AniTierList (UNOFFICIAL)
+			</h1>
 			<el-input v-model="username" class="ani-input-username mb-[15px]" placeholder="Username" @keyup.enter="enterClicked()">
 				<template #prefix>
 					<font-awesome-icon icon="fa-solid fa-search" />
 				</template>
 			</el-input>
-			<el-switch v-model="franchise" class="flex justify-center w-full" inactive-text="Rank seasons" active-text="Rank anime" />
+			<el-switch v-model="franchise" class="flex w-full justify-center" inactive-text="Rank seasons" active-text="Rank anime" />
 			<div class="mt-[15px] px-2">
 				<el-checkbox v-model="autoRank" label="Auto rank anime" />
-				<el-select v-model="scoreFormat" fit-input-width class="w-full ani-select-template">
-						<el-option label="User default score" value="DEFAULT" />
-						<el-option label="100 point (55/100)" value="POINT_100" />
-						<el-option label="10 Point Decimal (5,5/10)" value="POINT_10_DECIMAL" />
-						<el-option label="10 Point (5/10)" value="POINT_10" />
-						<el-option label="5 Star (3/5)" value="POINT_5" />
-						<el-option label="3 Point Smiley :)" value="POINT_3" />
-					</el-select>
+				<el-select v-model="scoreFormat" fit-input-width class="ani-select-template w-full">
+					<el-option label="User default score" value="DEFAULT" />
+					<el-option label="100 point (55/100)" value="POINT_100" />
+					<el-option label="10 Point Decimal (5,5/10)" value="POINT_10_DECIMAL" />
+					<el-option label="10 Point (5/10)" value="POINT_10" />
+					<el-option label="5 Star (3/5)" value="POINT_5" />
+					<el-option label="3 Point Smiley :)" value="POINT_3" />
+				</el-select>
 				<AniMultiRangeSlider v-model="range" :disabled="scoreFormat == 'DEFAULT'" class="mb-[15px] w-11/12 self-center" :min="getScoreRange[0]" :max="getScoreRange[1]" :step="getScoreRange[2]" />
 			</div>
-			<el-button type="primary" size="large" class="ani-button-search" :disabled="username == ''" @click="enterClicked()">Search</el-button>
+			<el-button type="primary" size="large" class="ani-button-search" :disabled="username == ''" @click="enterClicked()">
+				Search
+			</el-button>
 			<template v-if="userStore.isLogged">
 				<el-divider>OR CONTINUE</el-divider>
-				<div class="flex items-center w-full h-16 p-0 overflow-hidden transition-shadow border cursor-pointer gap-x-6 rounded-aniRounded hover:shadow-md" @click="continueClicked()">
-					<NuxtImg :src="userStore.getUser.avatar?.medium || `https://ui-avatars.com/api/?name=${userStore.getUser.username}`" fit="cover" class="h-16 aspect-square" />
-					<div class="flex flex-col w-full">
+				<div class="flex h-16 w-full cursor-pointer items-center gap-x-6 overflow-hidden rounded-aniRounded border p-0 transition-shadow hover:shadow-md" @click="continueClicked()">
+					<NuxtImg :src="userStore.getUser.avatar?.medium || `https://ui-avatars.com/api/?name=${userStore.getUser.username}`" fit="cover" class="aspect-square h-16" />
+					<div class="flex w-full flex-col">
 						<span class="font-bold text-aniGray">{{ userStore.getUsername }}</span>
 						<span v-if="tierStore.getAllEntries.length" class="font-normal text-aniGray">{{ tierStore.getAllEntries.length }} entries</span>
 					</div>
@@ -37,46 +41,46 @@
 
 <script setup lang="ts">
 // Data
-const username = ref<string>("");
-const autoRank = ref<boolean>(true);
-const range = ref<number[]>([0, 100]);
-const franchise = ref<boolean>(false);
-const scoreFormat = ref<string>("DEFAULT");
+const username = ref<string>("")
+const autoRank = ref<boolean>(true)
+const range = ref<number[]>([0, 100])
+const franchise = ref<boolean>(false)
+const scoreFormat = ref<string>("DEFAULT")
 
 // Store
-const userStore = useUserStore();
-const tierStore = useTierStore();
-const filterStore = useFilterStore();
+const userStore = useUserStore()
+const tierStore = useTierStore()
+const filterStore = useFilterStore()
 
 // Methods
 function enterClicked() {
-	filterStore.setFranchise(franchise.value);
-	filterStore.setRange(range.value);
-	userStore.setScoreFormat(scoreFormat.value);
-	tierStore.setAutoRank(autoRank.value);
-	if (username.value != "") navigateTo({ path: username.value });
+	filterStore.setFranchise(franchise.value)
+	filterStore.setRange(range.value)
+	userStore.setScoreFormat(scoreFormat.value)
+	tierStore.setAutoRank(autoRank.value)
+	if (username.value != "") navigateTo({ path: username.value })
 }
 
 function continueClicked() {
-	navigateTo(userStore.getUsername);
+	navigateTo(userStore.getUsername)
 }
 
 const getScoreRange = computed((): number[] => {
 	switch (scoreFormat.value) {
 		case "POINT_100":
-			return [0, 100, 1];
+			return [0, 100, 1]
 		case "POINT_10_DECIMAL":
-			return [0, 10, 0.1];
+			return [0, 10, 0.1]
 		case "POINT_10":
-			return [0, 10, 1];
+			return [0, 10, 1]
 		case "POINT_5":
-			return [0, 5, 1];
+			return [0, 5, 1]
 		case "POINT_3":
-			return [0, 3, 1];
+			return [0, 3, 1]
 		default:
-			return [0, 100, 1];
+			return [0, 100, 1]
 	}
-});
+})
 </script>
 
 <style>

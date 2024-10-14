@@ -1,5 +1,18 @@
 <template>
-	<svg id="svg9" version="1.1" width="480" height="480" viewBox="0 0 480 480" sodipodi:docname="prime video 2.svg" inkscape:version="1.2.2 (732a01da63, 2022-12-09)" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+	<svg
+		id="svg9"
+		version="1.1"
+		width="480"
+		height="480"
+		viewBox="0 0 480 480"
+		sodipodi:docname="prime video 2.svg"
+		inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+		xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+		xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+		xmlns:xlink="http://www.w3.org/1999/xlink"
+		xmlns="http://www.w3.org/2000/svg"
+		xmlns:svg="http://www.w3.org/2000/svg"
+	>
 		<defs id="defs13" />
 		<g id="g15" inkscape:groupmode="layer" inkscape:label="Image">
 			<image

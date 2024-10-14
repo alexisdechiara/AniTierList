@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export const content = ["./components/**/*.{js,vue,ts}", "./layouts/**/*.vue", "./pages/**/*.vue", "./plugins/**/*.{js,ts}", "./app.vue", "./error.vue"];
+export const content = ["./components/**/*.{js,vue,ts}", "./layouts/**/*.vue", "./pages/**/*.vue", "./plugins/**/*.{js,ts}", "./app.vue", "./error.vue"]
 export const theme = {
 	extend: {
 		colors: {
@@ -25,12 +25,12 @@ export const theme = {
 			aniShadow: "0px 14px 30px rgba(103, 132, 187, 0.1), 0px 4px 4px rgba(103, 132, 187, 0.04)",
 		},
 	},
-};
+}
 export const safelist = [
 	{
 		pattern: /bg-(gray|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fucshia|pink|rose)-(50|100|200|300|400|500|600|700|800|900)/,
 	},
-];
+]
 export const corePlugins = {
 	aspectRatio: false,
-};
+}

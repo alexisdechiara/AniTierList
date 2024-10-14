@@ -3,12 +3,12 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
-import type { CSSProperties } from "vue";
+import { reactive, ref } from "vue"
+import type { CSSProperties } from "vue"
 
 interface Mark {
-	style: CSSProperties;
-	label: string;
+	style: CSSProperties
+	label: string
 }
 
 const props = defineProps({
@@ -29,59 +29,59 @@ const props = defineProps({
 		default: 1,
 	},
 	disabled: Boolean,
-});
+})
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue"])
 
 function updateValue() {
-	emit("update:modelValue", [value.value[0], value.value[1]]);
+	emit("update:modelValue", [value.value[0], value.value[1]])
 }
 
-type Marks = Record<number, Mark | string>;
+type Marks = Record<number, Mark | string>
 
-const value = ref([props.modelValue[0], props.modelValue[1]]);
+const value = ref([props.modelValue[0], props.modelValue[1]])
 
 const marks = ref<Marks>(
 	createMarks(),
-);
+)
 
-//when max update change marks
+// when max update change marks
 watch(() => props.max, () => {
-	marks.value = createMarks();
-});
+	marks.value = createMarks()
+})
 
 function createMarks(): Marks {
 	if (props.max <= 3) {
 		return {
-			0: 'No score',
-			1: ':(',
-			2: ':|',
-			3: ':)',
-		} as Marks;
+			0: "No score",
+			1: ":(",
+			2: ":|",
+			3: ":)",
+		} as Marks
 	}
 	else if (props.max <= 10) {
-		const res: Marks = {};
-		Array.from(Array(props.max+1).keys()).forEach(element => {
-			res[element] = element.toString();
-		});
-		return res;
-	} else {
+		const res: Marks = {}
+		Array.from(Array(props.max + 1).keys()).forEach((element) => {
+			res[element] = element.toString()
+		})
+		return res
+	}
+	else {
 		return {
-			0: '0',
-			10: '10',
-			20: '20',
-			30: '30',
-			40: '40',
-			50: '50',
-			60: '60',
-			70: '70',
-			80: '80',
-			90: '90',
-			100: '100',
-		} as Marks;
+			0: "0",
+			10: "10",
+			20: "20",
+			30: "30",
+			40: "40",
+			50: "50",
+			60: "60",
+			70: "70",
+			80: "80",
+			90: "90",
+			100: "100",
+		} as Marks
 	}
 }
-
 </script>
 
 <style>
