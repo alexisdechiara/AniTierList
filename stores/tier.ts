@@ -25,6 +25,78 @@ export const useTierStore = defineStore({
 		},
 	},
 	actions: {
+		populateMockData() {
+			console.log("Populating with mock data...");
+			this.unrankedTier = []; // Clear existing data
+			const numItems = 3000; // Target for mock items
+
+			const seasons = ['WINTER', 'SPRING', 'SUMMER', 'FALL'];
+			const formats = ['TV', 'MOVIE', 'OVA', 'SPECIAL', 'ONA', 'MUSIC', 'MANGA', 'NOVEL', 'ONE_SHOT'];
+			const allGenres = [
+				'Action', 'Adventure', 'Comedy', 'Drama', 'Slice of Life', 
+				'Sci-Fi', 'Mecha', 'Fantasy', 'Magic', 'Supernatural', 
+				'Horror', 'Mystery', 'Psychological', 'Romance', 'Sports',
+				'Music', 'Mahou Shoujo', 'Thriller', 'Historical', 'Military', // Added more genres
+				'Isekai', 'Cyberpunk', 'Space', 'Vampire', 'Josei', 'Seinen', 'Shoujo', 'Shounen',
+				'Ecchi', // Acknowledged as a valid genre on AniList
+			];
+
+			for (let i = 0; i < numItems; i++) {
+				const year = 2000 + (i % 25); // Years from 2000 to 2024
+				const season = seasons[i % seasons.length];
+				const format = formats[i % formats.length];
+				
+				const itemGenres = [];
+				const numGenresForThisItem = 1 + (i % 5); // 1 to 5 genres per item
+				for (let j = 0; j < numGenresForThisItem; j++) {
+					// Cycle through allGenres to give variety
+					itemGenres.push(allGenres[(i * numGenresForThisItem + j) % allGenres.length]);
+				}
+
+				this.unrankedTier.push({
+					media: {
+						id: i + 1, // Unique ID, starting from 1
+						title: { 
+							english: `Mock Anime English Title ${i + 1}`, 
+							userPreferred: `Mock Anime Preferred Title ${i + 1}`,
+							romaji: `Mock Anime Romaji ${i + 1}`,
+							native: `モックアニメタイトル ${i + 1}` // Mock Japanese Title
+						},
+						seasonYear: year,
+						season: season,
+						format: format,
+						genres: [...new Set(itemGenres)], // Ensure unique genres for this item
+						startDate: { year: year, month: (i % 12) + 1, day: (i % 28) + 1 },
+						relations: { edges: [] }, // Default to empty relations
+						episodes: 1 + (i % 100), // Example: 1-100 episodes
+						chapters: null, // For anime, chapters might be null
+						volumes: null, // For anime, volumes might be null
+						status: ['FINISHED', 'RELEASING', 'NOT_YET_RELEASED', 'CANCELLED', 'HIATUS'][i%5],
+						averageScore: (i % 100), // Example average score
+						popularity: (i * 10) + 50, // Example popularity
+						countryOfOrigin: ['JP', 'CN', 'KR', 'US'][i%4], // Example country codes
+					},
+					score: (i % 10) * 10, // Score in steps of 10 for POINT_100, or adapt if another ScoreFormat is default
+                                                    // If ScoreFormat is POINT_10, then (i % 10) + 1 would be 1-10.
+                                                    // Assuming POINT_100 for now: 0, 10, 20, ..., 90. Or (i%101) for 0-100.
+                                                    // Let's use 0-100 for wider range: (i % 101)
+					// For POINT_100 (0-100), (i % 101) is fine.
+					// For POINT_10 (0-10), (i % 11) is fine.
+					// For POINT_5 (0-5), (i % 6) is fine.
+					// Let's stick to a 0-100 range for the raw score for now, as it's common.
+					score: (i % 101), // Score from 0 to 100.
+					completedAt: { year: year, month: (i % 12) + 1, day: (i % 28) + 1 },
+					updatedAt: Date.now() - (i * 3600000), // Simulating updates over time, i hours ago
+					startedAt: { year: year -1, month: (i % 12) + 1, day: (i % 28) + 1}, // Started a year before completed
+					isFranchise: (i % 10 === 0), // Example for isFranchise if used by any component logic
+					// ensure all fields used by any check function in UnrankedTier.vue are present
+					// title, seasonYear, season, format, genres, score are primary for filtering
+				});
+			}
+			console.log(`Populated ${this.unrankedTier.length} mock items into unrankedTier.`);
+			// Optional: If the default view should be sorted, call a sort function here.
+			// e.g., this.sortUnrankedTierEntriesByTitle(); 
+		},
 		setAutoRank(value: boolean) {
 			this.autoRank = value
 		},

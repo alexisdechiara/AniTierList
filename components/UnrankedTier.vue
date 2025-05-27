@@ -2,7 +2,7 @@
 	<div class="flex min-h-[150px] flex-col">
 		<draggable
 			v-if="unrankedTier.length > 0"
-			:list="unrankedTier"
+			v-model="unrankedTier"
 			class="flex w-full flex-row flex-wrap"
 			item-key="media.id"
 			group="tier"
@@ -17,29 +17,32 @@
 			@start="drag = true"
 			@end="drag = false"
 		>
-			<template #item="{ element, index }">
-				<Item v-show="checkAll(element)" :content="element" class="cursor-move" @deleted="removeAt(index)" />
+			<template #item="{ element }">
+				<Item v-if="shouldDisplayItem(element)" :content="element" class="cursor-move" @deleted="removeAt(element)" />
 			</template>
 		</draggable>
-		<el-empty v-else description="No anime found, please check the username" />
+		<el-empty v-if="unrankedTier.filter(shouldDisplayItem).length === 0" description="No anime found, please check the filters or username" />
 	</div>
 </template>
 
 <script setup>
 import draggable from "vuedraggable"
+import { computed } from "vue" // computed might still be needed for itemsToDisplayCount or similar
 
 const tierStore = useTierStore()
 const filterStore = useFilterStore()
 const userStore = useUserStore()
 const { unrankedTier } = storeToRefs(tierStore)
 
-function removeAt(index) {
-	unrankedTier.value.splice(index, 1)
+function removeAt(element) { // Changed 'index' to 'element'
+	const originalIndex = unrankedTier.value.findIndex(item => item.media.id === element.media.id);
+	if (originalIndex !== -1) {
+		unrankedTier.value.splice(originalIndex, 1);
+	}
 }
 
-function checkAll(element) {
-	return checkTitle(element.media.title) && checkYear(element.media.seasonYear) && checkSeason(element.media.season) && checkFormat(element.media.format) && checkGenre(element.media.genres) && checkScore(element.score)
-}
+// checkAll function is removed
+
 function checkYear(year) {
 	if (filterStore.getYears.length > 0) {
 		return filterStore.getYears.includes(year)
@@ -89,6 +92,29 @@ function checkScore(score) {
 	// } else return true;
 	return true
 }
+
+function shouldDisplayItem(element) {
+  console.count('shouldDisplayItem calls');
+  // const perfKey = `shouldDisplayItem ${element.media.id}`; // As per instructions, time is too noisy.
+  // console.time(perfKey);
+
+  const isVisible = checkTitle(element.media.title) &&
+         checkYear(element.media.seasonYear) &&
+         checkSeason(element.media.season) &&
+         checkFormat(element.media.format) &&
+         checkGenre(element.media.genres) &&
+         checkScore(element.score);
+  
+  // console.timeEnd(perfKey);
+  return isVisible;
+}
+
+// No longer using filteredUnrankedTier, vuedraggable uses v-model="unrankedTier"
+// and v-if="shouldDisplayItem(element)" handles visibility.
+// The el-empty condition directly uses unrankedTier.filter(shouldDisplayItem).length.
+// If performance becomes an issue with the .filter in the template,
+// a computed property for displayableItemsCount could be added.
+// For now, let's stick to the direct approach as per the plan.
 </script>
 
 <style>
