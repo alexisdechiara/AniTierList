@@ -1,5 +1,14 @@
 <template>
-	<div class="flex h-full items-center justify-center">
+	<div v-if="userStore.userLoadError" class="user-not-found-container p-4 text-center mt-10"> # Use mt-10 or similar for some top margin
+		<h1 class="text-2xl font-bold text-red-600 mb-4">Error Loading User Data</h1>
+		<p class="mb-2">Sorry, we could not load data for the user: <strong>{{ route.params.username }}</strong>.</p>
+		<p v-if="userStore.userLoadError" class="mb-4"> 
+			Reason: {{ userStore.userLoadError }}
+		</p>
+		<NuxtLink to="/" class="text-blue-500 hover:underline">Go back to Homepage</NuxtLink>
+	</div>
+	<div v-else class="page-content flex h-full items-center justify-center">
+		<!-- All existing content goes here -->
 		<div class="mx-32 flex max-h-full min-h-screen flex-col px-[30px]">
 			<div class="my-[40px] flex flex-row items-end space-x-6">
 				<AniInput v-model.lazy="filterStore.search" label="Search" search clearable />
@@ -61,6 +70,11 @@
 
 <script setup lang="ts">
 import data from "../content/data.json"
+import { useUserStore } from '~/stores/user'; // Adjusted path as per example
+import { useRoute } from 'vue-router'; // Or #imports for Nuxt 3
+
+const userStore = useUserStore();
+const route = useRoute();
 
 const downloadDialogVisible = ref(false)
 const years = ref<{ value: number, label: string }[]>([])

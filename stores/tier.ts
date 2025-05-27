@@ -215,17 +215,35 @@ export const useTierStore = defineStore({
 		},
 		autoRankTiers(overwrite: boolean = false) {
 			if (overwrite) {
-				this.unrankAllTiersEntries()
+				this.unrankAllTiersEntries(); // Assume this correctly empties ranked tiers for now
 			}
+
+			const itemsToRemainInUnranked: Array<any> = [];
+
 			this.unrankedTier.forEach((entry: any) => {
-				if (entry.score && this.autoRank) {
-					this.tiers.forEach((tier: any) => {
+				let rankedThisEntry = false;
+				// The this.autoRank check is from the original code, might be redundant if
+				// this action is only called when autoRank is globally enabled.
+				// For safety, keeping it:
+				if (entry.score && this.autoRank) { 
+					for (const tier of this.tiers) {
 						if (entry.score >= tier.range[0] && entry.score <= tier.range[1]) {
-							tier.entries.push(entry)
+							// Check if item already in this specific tier's entries
+							if (!tier.entries.some(e => e.media.id === entry.media.id)) {
+								tier.entries.push(entry);
+							}
+							rankedThisEntry = true;
+							break; // Item ranked, move to next entry in unrankedTier
 						}
-					})
+					}
 				}
-			})
+
+				if (!rankedThisEntry) {
+					itemsToRemainInUnranked.push(entry);
+				}
+			});
+
+			this.unrankedTier = itemsToRemainInUnranked;
 		},
 		addTier() {
 			if (this.tiers.length >= this.templates[this.currentTemplate].value.length) {
@@ -264,8 +282,16 @@ export const useTierStore = defineStore({
 			})
 		},
 		unrankTierEntries(tier: Tier) {
-			this.unrankedTier.unshift(...tier.entries)
-			tier.entries = []
+			// Filter tier.entries to get items that are not already in unrankedTier by media.id
+			const uniqueItemsFromTier = tier.entries.filter(itemFromTier => 
+				!this.unrankedTier.some(unrankedItem => unrankedItem.media.id === itemFromTier.media.id)
+			);
+			
+			// Prepend these unique items to the unrankedTier
+			this.unrankedTier.unshift(...uniqueItemsFromTier);
+			
+			// Clear the source tier's entries
+			tier.entries = [];
 		},
 		removeAllTiersEntries() {
 			this.unrankAllTiersEntries()

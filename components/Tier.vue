@@ -16,6 +16,7 @@
 			}"
 			@start="drag = true"
 			@end="drag = false"
+			:move="checkMove"
 		>
 			<template #item="{ element, index }">
 				<Item :content="element" class="cursor-move" @deleted="removeAt(index)" />
@@ -42,6 +43,31 @@ const isEditable = ref(false)
 
 function removeAt(index) {
 	tier.value.entries.splice(index, 1)
+}
+
+function checkMove(evt) {
+  const draggedItemData = evt.draggedContext.element;
+  if (!draggedItemData || !draggedItemData.media || typeof draggedItemData.media.id === 'undefined') {
+    console.warn('Dragged item data or media.id is missing from dragged item. Allowing move by default.');
+    return true; 
+  }
+  const draggedMediaId = draggedItemData.media.id;
+
+  // Allow reordering within the same list.
+  if (evt.from === evt.to) {
+    return true;
+  }
+
+  // Check if an item with the same ID (but not the same object instance) exists anywhere else.
+  // tierStore.getAllEntries will include the draggedItemData itself from its source list.
+  const allOtherEntries = tierStore.getAllEntries.filter(entry => entry !== draggedItemData); 
+  
+  if (allOtherEntries.some(entry => entry.media.id === draggedMediaId)) {
+     console.warn(`DUPLICATE CHECK (Tier.vue): Item ID ${draggedMediaId} already exists elsewhere in the tier lists. Preventing drop into a new list.`);
+     // Optional: pageStore.setNotification({ message: 'This item already exists in another tier or unranked list.', type: 'warning' });
+     return false; // Prevent drop
+  }
+  return true; // Allow move
 }
 </script>
 

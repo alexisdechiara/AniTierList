@@ -20,9 +20,33 @@ export const useUserStore = defineStore({
 		isLogged: false as boolean,
 		lastCompletedAt: Date.now() as number,
 		displayTransition: true as boolean,
+		userLoadError: null as string | null, // New state property
 	}),
 	actions: {
+		setUserLoadError(error: string | null) {
+			this.userLoadError = error;
+		},
+		clearUserLoadError() {
+			this.userLoadError = null;
+		},
+		clearCurrentUser() {
+			this.id = null;
+			this.username = "";
+			this.avatar = { large: "", medium: "" };
+			this.url = "";
+			this.titleLanguage = UserTitleLanguage.ENGLISH; // Or your default
+			this.displayAdultContent = false;
+			this.profileColor = "blue"; // Or your default
+			this.scoreFormat = "DEFAULT"; // Or your default
+			this.rowOrder = ""; // Or your default
+			this.isLogged = false;
+			this.lastCompletedAt = Date.now(); // Or reset to null/initial value if more appropriate
+			// this.displayTransition = true; // Assuming this is a general UI setting, not user-specific
+			this.clearUserLoadError();
+		},
 		async fetchUserData(username: string) {
+			this.clearCurrentUser(); // Clear previous user data and error state
+
 			const { data } = await useAsyncGql({
 				operation: "auth",
 				variables: { username: username },
@@ -44,8 +68,12 @@ export const useUserStore = defineStore({
 				}
 				this.rowOrder = user.mediaListOptions?.rowOrder || "UPDATED_AT"
 				this.isLogged = true
+				this.clearUserLoadError(); // User found, clear any previous error
 			}
-			else throw Error("User not found")
+			else {
+				this.setUserLoadError('User not found'); // Set error state
+				// Do not throw Error, let the function complete
+			}
 		},
 		setLastCompletedAt(value: number) {
 			this.lastCompletedAt = value

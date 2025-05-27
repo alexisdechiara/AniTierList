@@ -34,11 +34,11 @@
 						</el-scrollbar>
 						<div class="flex justify-center gap-x-2">
 							<div class="my-2 grid grid-cols-2 gap-x-6 gap-y-4">
-								<Stat title="Your score" :value="content.score ? userStore.getScoreFormat == 'POINT_10_DECIMAL' ? content.score : Math.trunc(content.score) + ' /' + getMaximumScoreFormat : '-'">
+								<Stat title="Your score" :value="displayScoreInfo.text">
 									<template #icon>
-										<font-awesome-icon v-if="Math.trunc(content.score) == null" icon="far fa-grin-beam-sweat" class="text-3xl text-aniGray" />
-										<font-awesome-icon v-else-if="Math.trunc(content.score) >= Math.trunc(getMaximumScoreFormat*0.8) " icon="far fa-smile" class="text-3xl text-aniGreen" />
-										<font-awesome-icon v-else-if="Math.trunc(content.score) < Math.trunc(getMaximumScoreFormat*0.8) && Math.trunc(content.score) >= Math.trunc(getMaximumScoreFormat*0.6)" icon="far fa-meh" class="text-3xl text-aniOrange" />
+										<font-awesome-icon v-if="displayScoreInfo.numericScore === null" icon="far fa-grin-beam-sweat" class="text-3xl text-aniGray" />
+										<font-awesome-icon v-else-if="displayScoreInfo.maxScore !== null && displayScoreInfo.numericScore >= displayScoreInfo.maxScore * 0.8" icon="far fa-smile" class="text-3xl text-aniGreen" />
+										<font-awesome-icon v-else-if="displayScoreInfo.maxScore !== null && displayScoreInfo.numericScore < displayScoreInfo.maxScore * 0.8 && displayScoreInfo.numericScore >= displayScoreInfo.maxScore * 0.6" icon="far fa-meh" class="text-3xl text-aniOrange" />
 										<font-awesome-icon v-else icon="far fa-frown" class="text-3xl text-aniRed" />
 									</template>
 								</Stat>
@@ -49,6 +49,7 @@
 								</Stat>
 								<Stat title="Average score" :value="content.media.averageScore + '%'">
 									<template #icon>
+										<!-- Note: The logic for Average Score icon seems to depend on content.score (Your score), not content.media.averageScore. This might be intentional or an existing bug. Keeping as is. -->
 										<font-awesome-icon v-if="content.score >= 8" icon="far fa-smile" class="text-3xl text-aniGreen" />
 										<font-awesome-icon v-else-if="content.score < 8 && content.score >= 6" icon="far fa-meh" class="text-3xl text-aniOrange" />
 										<font-awesome-icon v-if="content.score < 6" icon="far fa-frown" class="text-3xl text-aniRed" />
@@ -97,6 +98,7 @@
 
 <script lang="ts" setup>
 import { onClickOutside } from "@vueuse/core"
+import { computed } from "vue" // Import computed
 
 const userStore = useUserStore()
 const visible = ref(false)
@@ -104,7 +106,7 @@ const target = ref(null)
 
 onClickOutside(target, () => visible.value = false)
 
-defineProps<{
+const props = defineProps<{ // Explicitly assign to props for clarity in computed
 	content: any
 }>()
 
@@ -114,46 +116,94 @@ const isVideoOpened = ref(false)
 
 const getRank = (rankings: any) => {
 	let rank = "-"
-	rankings.forEach((element: any) => {
-		if (element.allTime && element.type === "RATED") {
-			rank = element.rank
-		}
-	})
+	if (rankings) {
+		rankings.forEach((element: any) => {
+			if (element.allTime && element.type === "RATED") {
+				rank = element.rank
+			}
+		})
+	}
 	return rank
 }
 
-const getMainStudios = (studios: Array<any>) => {
+const getMainStudios = (studios: any) => { // Assume studios can be null/undefined
 	const mainStudios: Array<any> = new Array<any>()
-	studios.forEach((studio: any) => {
-		if (studio.isMain) {
-			mainStudios.push(studio)
-		}
-	})
+	if (studios && studios.edges) { // Check if studios and studios.edges exist
+		studios.edges.forEach((studioEdge: any) => { // Iterate over edges
+			if (studioEdge.node && studioEdge.isMain) { // Check if node exists and isMain
+				mainStudios.push(studioEdge) // Push the edge, or studioEdge.node if preferred
+			}
+		})
+	}
 	return mainStudios
 }
 
+
 const getFormattedTime = (totalMinutes: number) => {
+	if (typeof totalMinutes !== 'number' || totalMinutes < 0) {
+		return "N/A";
+	}
 	const hours = Math.floor(totalMinutes / 60)
 	const minutes = totalMinutes % 60
 	return `${hours} hour${hours > 1 ? "s" : ""} ${minutes} minute${minutes > 1 ? "s" : ""}`
 }
 
-// get scoreFormat from userStore and return the /number
-const getMaximumScoreFormat = computed(() => {
+const displayScoreInfo = computed(() => {
+	const rawScoreValue = props.content.score;
+	let text: string = '-';
+	let numericScore: number | null = null;
+	let maxScore: number | null = null;
+	const originalScore: number | null = rawScoreValue === null || typeof rawScoreValue === 'undefined' ? null : Number(rawScoreValue);
+
+	if (originalScore === null) {
+		return { text: '-', numericScore: null, originalScore: null, maxScore: null };
+	}
+
 	switch (userStore.getScoreFormat) {
 		case "POINT_100":
-			return 100
+			numericScore = Math.trunc(originalScore);
+			maxScore = 100;
+			text = `${numericScore} /${maxScore}`;
+			break;
 		case "POINT_10_DECIMAL":
+			numericScore = parseFloat((originalScore / 10).toFixed(1));
+			maxScore = 10;
+			text = `${numericScore} /${maxScore}`;
+			break;
 		case "POINT_10":
-			return 10
+			numericScore = Math.round(originalScore / 10);
+			maxScore = 10;
+			text = `${numericScore} /${maxScore}`;
+			break;
 		case "POINT_5":
-			return 5
-		case "POINT_3":
-			return 3
-		default:
-			return 100
+			numericScore = Math.round(originalScore / 20);
+			maxScore = 5;
+			text = `${numericScore} /${maxScore}`;
+			break;
+		case "POINT_3": // Smiley system
+			if (originalScore <= 55) {
+				numericScore = 1; // Frown
+			} else if (originalScore <= 75) {
+				numericScore = 2; // Meh
+			} else {
+				numericScore = 3; // Smile
+			}
+			maxScore = 3;
+			text = `${numericScore} /${maxScore}`;
+			// For text like "Frown", "Meh", "Smile":
+			// const smileyTexts = ["Frown", "Meh", "Smile"];
+			// text = smileyTexts[numericScore - 1];
+			break;
+		default: // Handles "DEFAULT" or any other unexpected format from userStore
+			numericScore = Math.trunc(originalScore);
+			maxScore = 100; // Default to 100 scale if format is unknown
+			text = `${numericScore} /${maxScore}`;
+			break;
 	}
-})
+	return { text, numericScore, originalScore, maxScore };
+});
+
+// getMaximumScoreFormat computed property is removed.
 </script>
 
 <style>

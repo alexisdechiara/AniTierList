@@ -16,6 +16,7 @@
 			}"
 			@start="drag = true"
 			@end="drag = false"
+			:move="checkMove"
 		>
 			<template #item="{ element }">
 				<Item v-if="shouldDisplayItem(element)" :content="element" class="cursor-move" @deleted="removeAt(element)" />
@@ -107,6 +108,30 @@ function shouldDisplayItem(element) {
   
   // console.timeEnd(perfKey);
   return isVisible;
+}
+
+function checkMove(evt) {
+  const draggedItemData = evt.draggedContext.element;
+  if (!draggedItemData || !draggedItemData.media || typeof draggedItemData.media.id === 'undefined') {
+    console.warn('Dragged item data or media.id is missing from dragged item. Allowing move by default.');
+    return true; 
+  }
+  const draggedMediaId = draggedItemData.media.id;
+
+  // Allow reordering within the same list.
+  if (evt.from === evt.to) {
+    return true;
+  }
+
+  // Check if an item with the same ID (but not the same object instance) exists anywhere else.
+  const allOtherEntries = tierStore.getAllEntries.filter(entry => entry !== draggedItemData); 
+  
+  if (allOtherEntries.some(entry => entry.media.id === draggedMediaId)) {
+     console.warn(`DUPLICATE CHECK (UnrankedTier.vue): Item ID ${draggedMediaId} already exists elsewhere in the tier lists. Preventing drop into a new list.`);
+     // Optional: pageStore.setNotification({ message: 'This item already exists in another tier or unranked list.', type: 'warning' });
+     return false; // Prevent drop
+  }
+  return true; // Allow move
 }
 
 // No longer using filteredUnrankedTier, vuedraggable uses v-model="unrankedTier"
